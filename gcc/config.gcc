@@ -1419,6 +1419,7 @@ x86_64-*-netbsd*)
 	;;
 x86_64-*-hermit*)
 	tm_file="${tm_file} i386/unix.h i386/att.h dbxelf.h elfos.h newlib-stdint.h i386/i386elf.h i386/x86-64.h hermit.h"
+	extra_options="${extra_options} hermit.opt"
 	;;
 i[34567]86-*-openbsd2.*|i[34567]86-*openbsd3.[0123])
 	tm_file="i386/i386.h i386/unix.h i386/bsd.h i386/gas.h i386/gstabs.h openbsd-oldgas.h openbsd.h i386/openbsd.h"
