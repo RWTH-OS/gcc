@@ -318,7 +318,7 @@ esac
 
 case ${host} in
 x86_64-*-hermit*)
-	extra_parts="$extra_parts crtbegin.o crtend.o"
+	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o"
 	tmake_file="$tmake_file i386/t-crtstuff"
 	;;
 aarch64*-*-elf)
