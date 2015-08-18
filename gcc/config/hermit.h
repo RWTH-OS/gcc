@@ -9,7 +9,7 @@
                                                     /* modify this based on your needs */
 
 #undef  CPP_SPEC
-#define CPP_SPEC "%{pthread:-D_REENTRANT}"
+#define CPP_SPEC "%(cpp_cpu) %{pthread:-D_REENTRANT}"
 
 /* Don't automatically add extern "C" { } around header files. */
 #undef  NO_IMPLICIT_EXTERN_C
