@@ -5,8 +5,8 @@
 /* Default arguments you want when running your
  * i686-hermit-gcc/x86_64-hermit-gcc toolchain */
 #undef LIB_SPEC
-#define LIB_SPEC "%{pthread:-lpthread} -lc -lg -lm" /* link against C standard libraries */
-                                                    /* modify this based on your needs */
+#define LIB_SPEC "%{pthread:-lpthread} -lc -lg -lm -lhermit -llwip" /* link against C standard libraries */
+                                                             /* modify this based on your needs */
 
 #undef  CPP_SPEC
 #define CPP_SPEC "%(cpp_cpu) %{pthread:-D_REENTRANT}"
