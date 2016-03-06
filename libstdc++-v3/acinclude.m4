@@ -1897,6 +1897,52 @@ AC_DEFUN([GLIBCXX_CHECK_STDIO_PROTO], [
 ])
 
 dnl
+dnl Check whether required C++11 overloads are present in <math.h>.
+dnl
+AC_DEFUN([GLIBCXX_CHECK_MATH11_PROTO], [
+
+  AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+  ac_save_CXXFLAGS="$CXXFLAGS"
+  CXXFLAGS="$CXXFLAGS -std=c++11"
+
+  case "$host" in
+    *-*-solaris2.*)
+      # Solaris 12 introduced the C++11 <math.h> overloads.  A backport to
+      # a Solaris 11.3 SRU is likely, maybe even a Solaris 10 patch.
+      AC_MSG_CHECKING([for C++11 <math.h> overloads])
+      AC_CACHE_VAL(glibcxx_cv_math11_overload, [
+	AC_COMPILE_IFELSE([AC_LANG_SOURCE(
+	  [#include <math.h>
+	   #undef isfinite
+	   namespace std {
+	     inline bool isfinite(float __x)
+	     { return __builtin_isfinite(__x); }
+	   }
+	])],
+	[glibcxx_cv_math11_overload=no],
+	[glibcxx_cv_math11_overload=yes]
+      )])
+
+      # autoheader cannot handle indented templates.
+      AH_VERBATIM([__CORRECT_ISO_CPP11_MATH_H_PROTO],
+        [/* Define if all C++11 overloads are available in <math.h>.  */
+#if __cplusplus >= 201103L
+#undef __CORRECT_ISO_CPP11_MATH_H_PROTO
+#endif])
+
+      if test $glibcxx_cv_math11_overload = yes; then
+        AC_DEFINE(__CORRECT_ISO_CPP11_MATH_H_PROTO)
+      fi
+      AC_MSG_RESULT([$glibcxx_cv_math11_overload])
+      ;;
+  esac
+
+  CXXFLAGS="$ac_save_CXXFLAGS"
+  AC_LANG_RESTORE
+])
+
+dnl
 dnl Check whether macros, etc are present for <system_error>
 dnl
 AC_DEFUN([GLIBCXX_CHECK_SYSTEM_ERROR], [
@@ -3962,20 +4008,31 @@ dnl
       [glibcxx_cv_dirent_d_type=no])
   ])
   if test $glibcxx_cv_dirent_d_type = yes; then
-    AC_DEFINE(_GLIBCXX_HAVE_STRUCT_DIRENT_D_TYPE, 1, [Define to 1 if `d_type' is a member of `struct dirent'.])
+    AC_DEFINE(HAVE_STRUCT_DIRENT_D_TYPE, 1, [Define to 1 if `d_type' is a member of `struct dirent'.])
   fi
   AC_MSG_RESULT($glibcxx_cv_dirent_d_type)
 dnl
   AC_MSG_CHECKING([for realpath])
   AC_CACHE_VAL(glibcxx_cv_realpath, [dnl
     GCC_TRY_COMPILE_OR_LINK(
-      [#include <stdlib.h>],
-      [char *tmp = realpath((const char*)NULL, (char*)NULL);],
+      [
+       #include <stdlib.h>
+       #include <unistd.h>
+      ],
+      [
+       #if _XOPEN_VERSION < 500
+       #error
+       #elif _XOPEN_VERSION >= 700 || defined(PATH_MAX)
+       char *tmp = realpath((const char*)NULL, (char*)NULL);
+       #else
+       #error
+       #endif
+      ],
       [glibcxx_cv_realpath=yes],
       [glibcxx_cv_realpath=no])
   ])
   if test $glibcxx_cv_realpath = yes; then
-    AC_DEFINE(_GLIBCXX_USE_REALPATH, 1, [Define if realpath is available in <stdlib.h>.])
+    AC_DEFINE(_GLIBCXX_USE_REALPATH, 1, [Define if usable realpath is available in <stdlib.h>.])
   fi
   AC_MSG_RESULT($glibcxx_cv_realpath)
 dnl
