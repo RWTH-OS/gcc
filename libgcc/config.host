@@ -325,7 +325,7 @@ case ${host} in
 x86_64-*-hermit*)
 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o"
 	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
-	tmake_file="$tmake_file i386/t-crtpc i386/t-crtstuff"
+	tmake_file="$tmake_file i386/t-crtpc i386/t-crtstuff t-tls i386/t-linux"
 	;;
 aarch64*-*-elf)
 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o"
@@ -1317,7 +1317,6 @@ case ${host} in
 i[34567]86-*-linux* | x86_64-*-linux* | \
   i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu | \
   i[34567]86-*-knetbsd*-gnu | \
-  i[34567]86-*-hermit* | x86_64-*-hermit* | \
   i[34567]86-*-gnu*)
 	tmake_file="${tmake_file} t-tls i386/t-linux"
 	if test "$libgcc_cv_cfi" = "yes"; then
