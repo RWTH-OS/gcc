@@ -1,7 +1,7 @@
 /* Useful if you wish to make target-specific gcc changes. */
 #undef TARGET_HERMIT
 #define TARGET_HERMIT 1
- 
+
 /* Default arguments you want when running your
  * i686-hermit-gcc/x86_64-hermit-gcc toolchain */
 #undef LIB_SPEC
@@ -17,7 +17,7 @@
 
 /* Switch into a generic section.  */
 #define TARGET_ASM_NAMED_SECTION  default_elf_asm_named_section
- 
+
 /* Additional predefined macros. */
 #undef TARGET_OS_CPP_BUILTINS
 #define TARGET_OS_CPP_BUILTINS()      \

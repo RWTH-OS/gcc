@@ -324,7 +324,8 @@ esac
 case ${host} in
 x86_64-*-hermit*)
 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o"
-	tmake_file="$tmake_file i386/t-crtstuff"
+	extra_parts="$extra_parts crtprec32.o crtprec64.o crtprec80.o crtfastmath.o"
+	tmake_file="$tmake_file i386/t-crtpc i386/t-crtstuff"
 	;;
 aarch64*-*-elf)
 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o"
@@ -1316,6 +1317,7 @@ case ${host} in
 i[34567]86-*-linux* | x86_64-*-linux* | \
   i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu | \
   i[34567]86-*-knetbsd*-gnu | \
+  i[34567]86-*-hermit* | x86_64-*-hermit* | \
   i[34567]86-*-gnu*)
 	tmake_file="${tmake_file} t-tls i386/t-linux"
 	if test "$libgcc_cv_cfi" = "yes"; then
@@ -1334,6 +1336,7 @@ i[34567]86-*-darwin* | x86_64-*-darwin* | \
   i[34567]86-*-mingw* | x86_64-*-mingw* | \
   i[34567]86-*-dragonfly* | x86_64-*-dragonfly* | \
   i[34567]86-*-freebsd* | x86_64-*-freebsd* | \
+  i[34567]86-*-hermit* | x86_64-*-hermit* | \
   i[34567]86-*-openbsd* | x86_64-*-openbsd*)
   	tmake_file="${tmake_file} t-softfp-tf"
 	if test "${host_address}" = 32; then
