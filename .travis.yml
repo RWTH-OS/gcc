@@ -1,0 +1,32 @@
+sudo: required
+dist: trusty
+git:
+  submodules: false
+language: c
+compiler: gcc
+before_install:
+- sudo apt-get -qq update
+- sudo apt-get install -y nasm texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev
+  sshpass
+script:
+- cd $TOPDIR
+- wget https://www.lankes.org/deploy/binutils.tar.gz
+- tar xzvf binutils.tar.gz
+- mkdir -p $TOPDIR/tmp/bootstrap
+- cd $TOPDIR/tmp/bootstrap
+- $TOPDIR/RWTH-OS/gcc/configure --target=x86-hermit --prefix=$TOPDIR/x86 --without-headers --with-isl --with-tune=generic --enable-languages=c --disable-nls --disable-shared --disable-libssp --disable-libgomp --enable-threads=posix --enable-tls
+- make -j2
+- make install
+after_success:
+- cd $TOPDIR
+- tar -czvf bootstrap.tar.gz tmp x86
+- export SSHPASS=$DEPLOY_PASS
+- sshpass -e scp -o stricthostkeychecking=no bootstrap.tar.gz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH 2> /dev/null
+env:
+   global:
+     - TOPDIR=`pwd`/../..
+     - PATH=$PATH:$TOPDIR/x86/bin
+     - secure: "ehletePkTEipao8Dv3HrFt4z8LWUAxwvEvHPG4VB/w7tCZUIxz4JXYs1c0lTnF6M4XKZh255KOSeUktJtHSjKpi3k+hbLG4rbVOk+GQNLbLe0ZlxNTeepCEVMeLYtDwmgvPDD5qZFQkA3YsuVJd29i5UUfcQo3bMDMXRnH7SOpjPQs7KbvNrQUCgttK3su0qoa5k76JqHWumrvBqNvvYvxMxSb/LzF78V/ZfgBLP0JxkXSwPI2yD+mMFDafnO+svP9w/t2kK/A0cQCL+wsVyzG3eHwXkPt5l4cQly3xk1nZE9lwjzc/nPE2GHrJ2GYxS+jZrwjaqy61owyIGshgAJoxuBznezocgcctc5h9tpaxJdoA9MUhbzLAc62HAtn6JyyZD9ZiDRvoBh0tPvQ02Smwx3w6Fr4VG/tCV9Ed4wJk7Tn7YXm4nJT9XlXNUxcRWEmNXEbpGIrttaAnFXVmlBdmzrKtXP7UEI+eXgCgQ+zTFX7fXWjC2ukUltdUKzJ5Jo8qDGs33WqnqCUylDoJFNPjLD+D/EbVfS1UuJNIloi0U4A5HzGO1/1hmxu5fyJ2+h6+oWeFtv7ADVXoe/yLm9vsZktmJy0f6a0XiIhhdd2k672PA6PELK/ROWf5gmF9CXBwiVYqVaNVIJGItuJEdMON0H0ZOIBWQUn9AjJptf/Q="
+     - secure: "F1xZvZrxOYTPzhUJTZmOO70ndbVoHa3oOyHxYNE780wnubFD2etcSfH7BFfTnXkTkYwagkqHVHUZ0Dcem3D1X1fVdQyXE+t1ZP5j0zr2NH07iN3TatiWFMHTwllyA6PR+4CK47Jg7xN0/QJR/A/lGGfGhyCFRZa0K6QkzTnPx5VdaFVuX0z97v4SUKSNCSkgVL2rkbgDfXa+nIPml0KvY857gRvieohz+ufYjtrvUcp1QzOs1KxHDWQyRfOH4n26k71nANBq1ycaGbmlqeCq+BYqgg9V6R9yY12QMzzZ7/gzyIzU469mCPvh1o38fDlVWOLUhP2Kum27yZzJCojG94GwE5Hlc67GLphGPx2aoosw2ZDHGxRLsuX3zKCX2n9eg9Qv5aWPaHMWgaFYbmVzqVMeYWRkXRigQn3rAL6cmo935ObgNvPrdR6PnuUW/gsox5gcbpKKeD/tzQmWUNUFDlx4yoePTwwxIq61V/TeIv5cLkHqV5Hd1PHPgEIsqNwssKcRIWThBDofQL1B8hD/8+gxn5wiPcaLRrVSj+E/T6KHPdAT6eEBXzqW2ZxqwaDxxNQQVFRitZ0LDXdiEOyCMvA4JyBhK6jWzqs1BMezb+0/bBCUwNV8mX5FvwXBen3SC3Lq6UJkt/9V38CGVkriWrVzWKrCAIs7rGEHN+JIOtQ="
+     - secure: "Vgn8T3lfBh7gyXIe+t7+igGYhDIeKNw0aAXU6kBfXTEUZNz96Kq+Aav3AzPzc84lgQNVnnPJWkRlipuBW2vVyzepr2SuQ/HxZk67x3aKKS4w+gWqFSdxDhDWM3TCez6ly/WSbzpalzlWUz11uNlT5P5olTUd1prxFREr0yBJmZUuzNyWOI0MM4M4JK79TyeyT/I7waA88fA21MMVfRnqrgPb7+yDLU2ryMHb+gfwAP597t6tSmuTbbpV9HrI1fe/OoEzN/AvpBDjaG1FuZHOmjTZktVIwhJsvkClVrMSSspRjz9SgDAvLoGNC1DO/vxt3cELFM2tA6/2wtaa0sXS3iyiGhCZ6zcEjitMMhRAgyFeBIB0pmUVSoTLi1toaZddTpv2SdejDncTTgHuQdXRaOvK2ugmZvfrdKwb7XXgCVZOk56uM3IDiK6lrNsT2kcsjjISQqLBOPfDGslS+G4/RW/ZSppptgx3fJ5MZXq0KRrKe2YhB8WsT/DPNNUjuOkInNyXvJuJkQufWXFU/o1/sFaqlKTerhymm8u/uPdFNx/xQo8TQlYbVs5rZhkpAJxBP2rdvvRxjo/GL6YHhqnITO15sEsx633fJh+qaOftbg7CSFJDqZnOaEHSe+tWALexE8gHe+BJkmgD3J978VaCrttKPkp067scwZJgGrP+Wo8="
+     - secure: "m7iUr93MT/6XYsDJvF1c1/VdGzdOwGKx3XJ0S+1k7GKfpM+5xPhCB0+7MhgLGzlNLHsZGY4yEQjWPSEh9EKp+ucKAxMIoli50hj4yQULgIxwo8utBEi6Ix29qjk3RDmMvkgriiq2ZGxoRp4+XSdIb35WNnGr3AtN8vqZ3F1hvkWyR2LpbjdCQYhNKvOPsFYUunvNqO1OUn+6CG2gysH3B6Woho1KW5Ug9qonEEBkEjGQCbGvC0Oqm9TRk0t/8ALgD5HZ9r/m3Gz38yykoZ/0j14NN/3a3Q/B+i2d3zWVVHoqX/iJ9hby1U07kb1mvRL6zGlYHXFOipRylljk2gkU6+XvO/DNPVQ0+Q+1cLKXshcwXEO5E/Tj7pM9/yntRVwybOwpZzSk0aVwrSb2RdRsxFnGOYYuTTDyZlTTr6+OGg/WSML90jid33R3DwWaRifS9CaRDxnA2hYbUA8KPbr/FpZ8y1olsR0jpmenjUVlhJGa6wIimDakwUZn9iz9SyG9tF+nE0V4SDaXBqCQ052eU0bj2rRHyj2aLWnuB69MnwWEevNhnAMwQPgJX6aQSV7bHDGKz/o1KsCfMSJVfHFJPUoexY30yk79imfJGwqVr6Bh2Xajtt4ACLtCVzjq7qXhnCCPEhGc/ymEdCKV6Ire3lyzQkR39i0kKQKOlx6zzWo="
