@@ -11,7 +11,7 @@ before_install:
 script:
 - cd $TOPDIR
 - wget https://www.lankes.org/deploy/binutils.tar.gz
-- tar xzvf binutils.tar.gz
+- tar xzf binutils.tar.gz
 - mkdir -p $TOPDIR/tmp/bootstrap
 - cd $TOPDIR/tmp/bootstrap
 - $TOPDIR/RWTH-OS/gcc/configure --target=x86_64-hermit --prefix=$TOPDIR/x86 --without-headers --with-isl --with-tune=generic --enable-languages=c --disable-nls --disable-shared --disable-libssp --disable-libgomp --enable-threads=posix --enable-tls
