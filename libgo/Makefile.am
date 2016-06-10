@@ -224,9 +224,13 @@ toolexeclibgoencoding_DATA = \
 
 toolexeclibgoexpdir = $(toolexeclibgodir)/exp
 
+if LIBGO_IS_HERMIT
+toolexeclibgoexp_DATA =
+else
 toolexeclibgoexp_DATA = \
 	exp/proxy.gox \
 	exp/terminal.gox
+endif
 
 toolexeclibgogodir = $(toolexeclibgodir)/go
 
@@ -774,8 +778,20 @@ endif
 endif
 endif
 
+if LIBGO_IS_HERMIT
+go_net_sock =
+else
+go_net_sock =   go/net/iprawsock_posix.go \
+		go/net/unixsock_posix.go \
+		go/net/udpsock_posix.go \
+		go/net/ipsock_posix.go
+endif
+
 go_net_common_files = \
 	$(go_net_cloexec_file) \
+        go/net/iprawsock.go \
+        go/net/unixsock.go \
+        go/net/udpsock.go \
 	go/net/dial.go \
 	go/net/dnsclient.go \
 	go/net/dnsclient_unix.go \
@@ -788,10 +804,7 @@ go_net_common_files = \
 	go/net/interface.go \
 	$(go_net_interface_file) \
 	go/net/ip.go \
-	go/net/iprawsock.go \
-	go/net/iprawsock_posix.go \
 	go/net/ipsock.go \
-	go/net/ipsock_posix.go \
 	go/net/lookup.go \
 	go/net/lookup_unix.go \
 	go/net/mac.go \
@@ -813,10 +826,7 @@ go_net_common_files = \
 	go/net/tcpsock_posix.go \
 	go/net/tcpsockopt_posix.go \
 	$(go_net_tcpsockopt_file) \
-	go/net/udpsock.go \
-	go/net/udpsock_posix.go \
-	go/net/unixsock.go \
-	go/net/unixsock_posix.go
+	$(go_net_sock)
 
 go_net_files = \
 	go/net/cgo_unix.go \
@@ -863,7 +873,11 @@ else
 if LIBGO_IS_RTEMS
 go_os_sys_file = go/os/sys_uname.go
 else
+if LIBGO_IS_HERMIT
+go_os_sys_file =
+else
 go_os_sys_file = go/os/sys_bsd.go
+endif
 endif
 endif
 endif
@@ -904,7 +918,11 @@ else
 if LIBGO_IS_DRAGONFLY
 go_os_stat_file = go/os/stat_dragonfly.go
 else
+if LIBGO_IS_HERMIT
+go_os_stat_file =
+else
 go_os_stat_file = go/os/stat.go
+endif
 endif
 endif
 endif
@@ -916,25 +934,58 @@ endif
 if LIBGO_IS_LINUX
 go_os_pipe_file = go/os/pipe_linux.go
 else
+if LIBGO_IS_HERMIT
+go_os_pipe_file =
+else
 go_os_pipe_file = go/os/pipe_bsd.go
+endif
+endif
+
+if LIBGO_IS_HERMIT
+go_os_exec_file =
+else
+go_os_exec_file = go/os/exec_posix.go go/os/exec_unix.go
+endif
+
+if LIBGO_IS_HERMIT
+go_os_doc_file =
+else
+go_os_doc_file = go/os/doc.go
+endif
+
+if LIBGO_IS_HERMIT
+go_os_file_unix = go/os/file_hermit.go
+else
+go_os_file_unix = go/os/file_unix.go
+endif
+
+if LIBGO_IS_HERMIT
+go_os_getwd =
+else
+go_os_getwd = go/os/getwd.go
+endif
+
+if LIBGO_IS_HERMIT
+go_os_path =
+else
+go_os_path = go/os/path.go
 endif
 
 go_os_files = \
 	$(go_os_dir_file) \
 	go/os/dir.go \
-	go/os/doc.go \
+	$(go_os_doc_file) \
 	go/os/env.go \
 	go/os/error.go \
 	go/os/error_unix.go \
 	go/os/exec.go \
-	go/os/exec_posix.go \
-	go/os/exec_unix.go \
+	$(exec_posix) \
 	go/os/file.go \
 	go/os/file_posix.go \
-	go/os/file_unix.go \
-	go/os/getwd.go \
+	$(go_os_file_unix) \
+	$(go_os_getwd) \
 	$(go_os_getwd_file) \
-	go/os/path.go \
+	$(go_os_path) \
 	go/os/path_unix.go \
 	$(go_os_pipe_file) \
 	go/os/proc.go \
@@ -1596,11 +1647,19 @@ go_unicode_utf8_files = \
 if LIBGO_IS_RTEMS
 syscall_syscall_file = go/syscall/syscall_stubs.go
 else
+if LIBGO_IS_HERMIT
+syscall_syscall_file = go/syscall/syscall_hermit.go
+else
 syscall_syscall_file = go/syscall/syscall_unix.go
+endif
 endif
 
 # Define ForkExec and Exec.
 if LIBGO_IS_RTEMS
+syscall_exec_file = go/syscall/exec_stubs.go
+syscall_exec_os_file =
+else
+if LIBGO_IS_HERMIT
 syscall_exec_file = go/syscall/exec_stubs.go
 syscall_exec_os_file =
 else
@@ -1612,9 +1671,13 @@ syscall_exec_file = go/syscall/exec_unix.go
 syscall_exec_os_file = go/syscall/exec_bsd.go
 endif
 endif
+endif
 
 # Define Wait4.
 if LIBGO_IS_RTEMS
+syscall_wait_file =
+else
+if LIBGO_IS_HERMIT
 syscall_wait_file =
 else
 if HAVE_WAIT4
@@ -1623,12 +1686,17 @@ else
 syscall_wait_file = go/syscall/libcall_waitpid.go
 endif
 endif
+endif
 
 # Support for pulling apart wait status.
 if LIBGO_IS_RTEMS
 syscall_wait_c_file =
 else
+if LIBGO_IS_HERMIT
+syscall_wait_c_file =
+else
 syscall_wait_c_file = go/syscall/wait.c
+endif
 endif
 
 # Define Sleep.
@@ -1672,8 +1740,12 @@ syscall_size_file = go/syscall/libcall_posix_regfile.go
 endif # !LIBGO_IS_386 && !LIBGO_IS_SPARC
 endif # !LIBGO_IS_SOLARIS
 else # !LIBGO_IS_LINUX && !LIBGO_IS_SOLARIS
+if LIBGO_IS_HERMIT
+syscall_size_file = go/syscall/libcall_posix_hermitfile.go
+else
 # Use lseek by default.
 syscall_size_file = go/syscall/libcall_posix_regfile.go
+endif # !LIBGO_IS_HERMIT
 endif # !LIBGO_IS_SOLARIS
 endif # !LIBGO_IS_LINUX
 
@@ -1706,7 +1778,11 @@ endif
 if LIBGO_IS_SOLARIS
 syscall_socket_os_file = go/syscall/socket_xnet.go
 else
+if LIBGO_IS_HERMIT
+syscall_socket_os_file = go/syscall/socket_posix_hermit.go
+else
 syscall_socket_os_file = go/syscall/socket_posix.go
+endif
 endif
 
 # Support for uname.
@@ -1718,7 +1794,11 @@ else # !LIBGO_IS_386 && LIBGO_IS_SOLARIS
 syscall_uname_file = go/syscall/libcall_uname.go
 endif
 else # !LIBGO_IS_SOLARIS
+if LIBGO_IS_HERMIT
+syscall_uname_file =
+else
 syscall_uname_file = go/syscall/libcall_uname.go
+endif
 endif
 
 # GNU/Linux specific socket control messages.
@@ -1756,14 +1836,25 @@ else
 syscall_creds_test_file =
 endif
 
+if LIBGO_IS_HERMIT
+syscall_socket = go/syscall/socket_hermit.go
+else
+syscall_socket = go/syscall/socket.go
+endif
+
+if LIBGO_IS_HERMIT
+syscall_posix = go/syscall/libcall_posix_hermit.go
+else
+syscall_posix = go/syscall/libcall_posix.go
+endif
+
 go_base_syscall_files = \
 	go/syscall/env_unix.go \
 	go/syscall/syscall_errno.go \
 	go/syscall/libcall_support.go \
-	go/syscall/libcall_posix.go \
+	$(syscall_posix) \
 	go/syscall/race0.go \
-	go/syscall/socket.go \
-	go/syscall/sockcmsg_unix.go \
+	$(syscall_socket) \
 	go/syscall/str.go \
 	go/syscall/syscall.go \
 	$(syscall_sockcmsg_file) \
@@ -1791,6 +1882,7 @@ go_syscall_files = \
 	libcalls.go \
 	sysinfo.go \
 	syscall_arch.go
+
 go_syscall_c_files = \
 	go/syscall/errno.c \
 	go/syscall/signame.c \
@@ -1878,6 +1970,12 @@ else
 os_lib_inotify_lo =
 endif
 
+if LIBGO_IS_HERMIT
+os_lib_terminal =
+else
+os_lib_terminal = exp/terminal.lo net.lo
+endif
+
 libgo_go_objs = \
 	bufio.lo \
 	bytes.lo \
@@ -1895,7 +1993,6 @@ libgo_go_objs = \
 	log.lo \
 	math.lo \
 	mime.lo \
-	net.lo \
 	os.lo \
 	path.lo \
 	reflect-go.lo \
@@ -1962,7 +2059,7 @@ libgo_go_objs = \
 	encoding/pem.lo \
 	encoding/xml.lo \
 	exp/proxy.lo \
-	exp/terminal.lo \
+	$(os_lib_terminal) \
 	html/template.lo \
 	go/ast.lo \
 	go/build.lo \
@@ -2056,8 +2153,13 @@ libgolibbegin_a_SOURCES = \
 
 libgolibbegin_a_CFLAGS = $(AM_CFLAGS) -fPIC
 
+if LIBGO_IS_HERMIT
+libnetgo_a_SOURCES =
+libnetgo_a_LIBADD =
+else
 libnetgo_a_SOURCES = $(go_netgo_files)
 libnetgo_a_LIBADD = netgo.o
+endif
 
 LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
 

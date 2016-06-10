@@ -8,6 +8,8 @@
 #include "defs.h"
 #include "malloc.h"
 
+#ifndef __hermit__
+
 // Integrated network poller (kqueue-based implementation).
 
 int32	runtime_kqueue(void);
@@ -116,3 +118,5 @@ runtime_netpoll_scan(struct Workbuf** wbufp, void (*enqueue1)(struct Workbuf**, 
 	USED(wbufp);
 	USED(enqueue1);
 }
+
+#endif /* __hermit__ */

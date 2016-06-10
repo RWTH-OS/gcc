@@ -26,11 +26,13 @@ __go_fcntl (int fd, int cmd, int arg)
   return fcntl (fd, cmd, arg);
 }
 
+#ifndef __hermit__
 int
 __go_fcntl_flock (int fd, int cmd, struct flock *arg)
 {
   return fcntl (fd, cmd, arg);
 }
+#endif
 
 #ifdef HAVE_OPEN64
 

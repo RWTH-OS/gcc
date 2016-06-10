@@ -61,7 +61,7 @@ const (
 	O_APPEND int = syscall.O_APPEND // append data to the file when writing.
 	O_CREATE int = syscall.O_CREAT  // create a new file if none exists.
 	O_EXCL   int = syscall.O_EXCL   // used with O_CREATE, file must not exist
-	O_SYNC   int = syscall.O_SYNC   // open for synchronous I/O.
+	/*O_SYNC   int = syscall.O_SYNC*/   // open for synchronous I/O.
 	O_TRUNC  int = syscall.O_TRUNC  // if possible, truncate file when opened.
 )
 
@@ -249,7 +249,7 @@ func Create(name string) (file *File, err error) {
 }
 
 // lstat is overridden in tests.
-var lstat = Lstat
+/* var lstat = Lstat */
 
 // Rename renames (moves) a file. OS-specific restrictions might apply.
 func Rename(oldpath, newpath string) error {

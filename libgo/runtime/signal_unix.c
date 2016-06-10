@@ -4,6 +4,7 @@
 
 // +build darwin dragonfly freebsd linux netbsd openbsd solaris
 
+#include <signal.h>
 #include <sys/time.h>
 
 #include "runtime.h"

@@ -24,8 +24,8 @@ func (w WaitStatus) Stopped() bool   { return false }
 func (w WaitStatus) Continued() bool { return false }
 func (w WaitStatus) CoreDump() bool  { return false }
 func (w WaitStatus) ExitStatus() int { return 0 }
-func (w WaitStatus) Signal() int     { return 0 }
-func (w WaitStatus) StopSignal() int { return 0 }
+//func (w WaitStatus) Signal() int     { return 0 }
+//func (w WaitStatus) StopSignal() int { return 0 }
 func (w WaitStatus) TrapCause() int  { return 0 }
 
 func raw_ptrace(request int, pid int, addr *byte, data *byte) Errno {
