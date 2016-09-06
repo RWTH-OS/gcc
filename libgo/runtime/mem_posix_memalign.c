@@ -24,6 +24,13 @@ runtime_SysAlloc(uintptr n, uint64 *stat)
 }
 
 void
+runtime_SysUsed(void *v, uintptr n)
+{
+	USED(v);
+	USED(n);
+}
+
+void
 runtime_SysUnused(void *v, uintptr n)
 {
 	USED(v);
@@ -38,6 +45,9 @@ runtime_SysFree(void *v, uintptr n, uint64 *stat)
 	mstats.sys -= n;
 	free(v);
 }
+
+// add dummy pointer for "runtime/malloc.goc"
+char* _end = NULL;
 
 void*
 runtime_SysReserve(void *v, uintptr n, bool* reserved)
@@ -54,4 +64,11 @@ runtime_SysMap(void *v, uintptr n, bool reserved, uint64 *stat)
 	USED(n);
 	USED(stat);
 	USED(reserved);
+}
+
+void
+runtime_SysFault(void *v, uintptr n)
+{
+	USED(v);
+	USED(n);
 }

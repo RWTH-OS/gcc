@@ -22,5 +22,5 @@ void
 runtime_netpoll_scan(struct Workbuf** wbufp, void (*enqueue1)(struct Workbuf**, Obj))
 {
 	USED(wbufp);
-	USED(addroot);
+	USED(enqueue1);
 }

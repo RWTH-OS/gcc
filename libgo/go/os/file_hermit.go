@@ -107,14 +107,15 @@ func (file *file) close() error {
 	}
 
 	if file.dirinfo != nil {
-		syscall.Entersyscall()
+		/*syscall.Entersyscall()
 		i := libc_closedir(file.dirinfo.dir)
 		errno := syscall.GetErrno()
 		syscall.Exitsyscall()
 		file.dirinfo = nil
 		if i < 0 && err == nil {
 			err = &PathError{"closedir", file.name, errno}
-		}
+		}*/
+		err = &PathError{"closedir", file.name, syscall.ENOSYS}
 	}
 
 	file.fd = -1 // so it can't be closed again
@@ -126,8 +127,8 @@ func (file *file) close() error {
 
 // Stat returns the FileInfo structure describing file.
 // If there is an error, it will be of type *PathError.
-/*func (f *File) Stat() (fi FileInfo, err error) {
-	if f == nil {
+func (f *File) Stat() (fi FileInfo, err error) {
+	/*if f == nil {
 		return nil, ErrInvalid
 	}
 	var stat syscall.Stat_t
@@ -135,35 +136,38 @@ func (file *file) close() error {
 	if err != nil {
 		return nil, &PathError{"stat", f.name, err}
 	}
-	return fileInfoFromStat(&stat, f.name), nil
-}*/
+	return fileInfoFromStat(&stat, f.name), nil*/
+	return nil, &PathError{"stat", f.name, syscall.ENOSYS}
+}
 
 // Stat returns a FileInfo describing the named file.
 // If there is an error, it will be of type *PathError.
-/*func Stat(name string) (fi FileInfo, err error) {
-	var stat syscall.Stat_t
+func Stat(name string) (fi FileInfo, err error) {
+	/*var stat syscall.Stat_t
 	err = syscall.Stat(name, &stat)
 	if err != nil {
 		return nil, &PathError{"stat", name, err}
 	}
-	return fileInfoFromStat(&stat, name), nil
-}*/
+	return fileInfoFromStat(&stat, name), nil*/
+	return nil, &PathError{"stat", name, syscall.ENOSYS}
+}
 
 // Lstat returns a FileInfo describing the named file.
 // If the file is a symbolic link, the returned FileInfo
 // describes the symbolic link.  Lstat makes no attempt to follow the link.
 // If there is an error, it will be of type *PathError.
-/*func Lstat(name string) (fi FileInfo, err error) {
-	var stat syscall.Stat_t
+func Lstat(name string) (fi FileInfo, err error) {
+	/*var stat syscall.Stat_t
 	err = syscall.Lstat(name, &stat)
 	if err != nil {
 		return nil, &PathError{"lstat", name, err}
 	}
-	return fileInfoFromStat(&stat, name), nil
-}*/
+	return fileInfoFromStat(&stat, name), nil*/
+	return nil, &PathError{"lstat", name, syscall.ENOSYS}
+}
 
-/*func (f *File) readdir(n int) (fi []FileInfo, err error) {
-	dirname := f.name
+func (f *File) readdir(n int) (fi []FileInfo, err error) {
+/*	dirname := f.name
 	if dirname == "" {
 		dirname = "."
 	}
@@ -181,8 +185,9 @@ func (file *file) close() error {
 		}
 		fi = append(fi, fip)
 	}
-	return fi, err
-}*/
+	return fi, err*/
+	return nil, syscall.ENOSYS
+}
 
 // Darwin and FreeBSD can't read or write 2GB+ at a time,
 // even on 64-bit systems. See golang.org/issue/7812.

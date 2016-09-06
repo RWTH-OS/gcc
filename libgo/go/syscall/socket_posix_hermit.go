@@ -15,8 +15,9 @@ package syscall
 //sysnb	socket(domain int, typ int, proto int) (fd int, err error)
 //socket(domain _C_int, typ _C_int, protocol _C_int) _C_int
 
-//sysnb	socketpair(domain int, typ int, proto int, fd *[2]_C_int) (err error)
-//socketpair(domain _C_int, typ _C_int, protocol _C_int, fd *[2]_C_int) _C_int
+func socketpair(domain int, typ int, proto int, fd *[2]_C_int) (err error) {
+	return ENOSYS
+}
 
 //sys	getsockopt(s int, level int, name int, val unsafe.Pointer, vallen *Socklen_t) (err error)
 //getsockopt(s _C_int, level _C_int, name _C_int, val *byte, vallen *Socklen_t) _C_int

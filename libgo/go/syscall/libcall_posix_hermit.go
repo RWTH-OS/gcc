@@ -17,8 +17,10 @@ import "unsafe"
  * Wrapped
  */
 
-//sysnb	pipe(p *[2]_C_int) (err error)
-//pipe(p *[2]_C_int) _C_int
+func pipe(p *[2]_C_int) (err error) {
+	return ENOSYS
+}
+
 func Pipe(p []int) (err error) {
 	if len(p) != 2 {
 		return EINVAL
@@ -30,8 +32,10 @@ func Pipe(p []int) (err error) {
 	return
 }
 
-//sys	utimes(path string, times *[2]Timeval) (err error)
-//utimes(path *byte, times *[2]Timeval) _C_int
+func utimes(path string, times *[2]Timeval) (err error) {
+	return ENOSYS
+}
+
 func Utimes(path string, tv []Timeval) (err error) {
 	if len(tv) != 2 {
 		return EINVAL
@@ -39,8 +43,9 @@ func Utimes(path string, tv []Timeval) (err error) {
 	return utimes(path, (*[2]Timeval)(unsafe.Pointer(&tv[0])))
 }
 
-//sys	getcwd(buf *byte, size Size_t) (err error)
-//getcwd(buf *byte, size Size_t) *byte
+func getcwd(buf *byte, size Size_t) (err error) {
+	return EINVAL
+}
 
 const ImplementsGetwd = true
 
@@ -73,8 +78,9 @@ func Getcwd(buf []byte) (n int, err error) {
 	return
 }
 
-//sysnb	getgroups(size int, list *Gid_t) (nn int, err error)
-//getgroups(size _C_int, list *Gid_t) _C_int
+func getgroups(size int, list *Gid_t) (nn int, err error) {
+	return 0, ENOSYS
+}
 
 func Getgroups() (gids []int, err error) {
 	n, err := getgroups(0, nil)
@@ -102,8 +108,9 @@ func Getgroups() (gids []int, err error) {
 	return
 }
 
-//sysnb	setgroups(n int, list *Gid_t) (err error)
-//setgroups(n Size_t, list *Gid_t) _C_int
+func setgroups(n int, list *Gid_t) (err error) {
+	return ENOSYS
+}
 
 func Setgroups(gids []int) (err error) {
 	if len(gids) == 0 {
@@ -132,8 +139,9 @@ func (w WaitStatus) Signal() Signal
 func (w WaitStatus) StopSignal() Signal
 func (w WaitStatus) TrapCause() int
 
-//sys	Mkfifo(path string, mode uint32) (err error)
-//mkfifo(path *byte, mode Mode_t) _C_int
+func Mkfifo(path string, mode uint32) (err error) {
+	return ENOSYS
+}
 
 //sys	Select(nfd int, r *FdSet, w *FdSet, e *FdSet, timeout *Timeval) (n int, err error)
 //select(nfd _C_int, r *FdSet, w *FdSet, e *FdSet, timeout *Timeval) _C_int
@@ -166,83 +174,84 @@ func FDZero(set *FdSet) {
 	}
 }
 
-//sys	Access(path string, mode uint32) (err error)
-//access(path *byte, mode _C_int) _C_int
+func Access(path string, mode uint32) (err error) {
+	return ENOSYS
+}
 
-//sys	Chdir(path string) (err error)
-//chdir(path *byte) _C_int
+func Chdir(path string) (err error) {
+	return ENOSYS
+}
 
-//sys	Chmod(path string, mode uint32) (err error)
-//chmod(path *byte, mode Mode_t) _C_int
+func Chmod(path string, mode uint32) (err error) {
+	return ENOSYS
+}
 
-//sys	Chown(path string, uid int, gid int) (err error)
-//chown(path *byte, uid Uid_t, gid Gid_t) _C_int
+func Chown(path string, uid int, gid int) (err error) {
+	return ENOSYS
+}
 
-//sys	Chroot(path string) (err error)
-//chroot(path *byte) _C_int
+func Chroot(path string) (err error) {
+	return ENOSYS
+}
 
 //sys	Close(fd int) (err error)
 //close(fd _C_int) _C_int
 
-//sys	Creat(path string, mode uint32) (fd int, err error)
-//creat(path *byte, mode Mode_t) _C_int
+func Creat(path string, mode uint32) (fd int, err error) {
+	return 0, ENOSYS
+}
 
-//sysnb	Dup(oldfd int) (fd int, err error)
-//dup(oldfd _C_int) _C_int
+func Dup(oldfd int) (fd int, err error) {
+	return 0, ENOSYS
+}
 
-//sysnb	Dup2(oldfd int, newfd int) (err error)
-//dup2(oldfd _C_int, newfd _C_int) _C_int
+func Dup2(oldfd int, newfd int) (err error) {
+	return ENOSYS
+}
 
 //sys	Exit(code int)
 //exit(code _C_int)
 
-//sys	Fchdir(fd int) (err error)
-//fchdir(fd _C_int) _C_int
-
-//sys	Fchmod(fd int, mode uint32) (err error)
-//fchmod(fd _C_int, mode Mode_t) _C_int
-
-//sys	Fchown(fd int, uid int, gid int) (err error)
-//fchown(fd _C_int, uid Uid_t, gid Gid_t) _C_int
-
 //sys	fcntl(fd int, cmd int, arg int) (val int, err error)
 //__go_fcntl(fd _C_int, cmd _C_int, arg _C_int) _C_int
 
-//sys	Fdatasync(fd int) (err error)
-//fdatasync(fd _C_int) _C_int
+func Fdatasync(fd int) (err error) {
+	return ENOSYS
+}
 
-//sys	Fsync(fd int) (err error)
-//fsync(fd _C_int) _C_int
+func Fsync(fd int) (err error) {
+	return ENOSYS
+}
 
-//sysnb Getegid() (egid int)
-//getegid() Gid_t
+func Fchdir(fd int) (err error) {
+	return ENOSYS
+}
 
-//sysnb Geteuid() (euid int)
-//geteuid() Uid_t
+func Fchmod(fd int, mode uint32) (err error) {
+	return ENOSYS
+}
 
-//sysnb Getgid() (gid int)
-//getgid() Gid_t
+func Fchown(fd int, uid int, gid int) (err error) {
+	return ENOSYS
+}
+
+func Getegid() (egid int) {
+	return 0
+}
+
+func Geteuid() (euid int) {
+	return 0
+}
+
+func Getgid() (gid int)  {
+	return 0
+}
 
 //sysnb	Getpagesize() (pagesize int)
 //getpagesize() _C_int
 
-//sysnb	Getpgid(pid int) (pgid int, err error)
-//getpgid(pid Pid_t) Pid_t
-
-//sysnb	Getpgrp() (pid int)
-//getpgrp() Pid_t
-
 //sysnb	Getpid() (pid int)
 //getpid() Pid_t
-
-//sysnb	Getppid() (ppid int)
-//getppid() Pid_t
-
-//sys Getpriority(which int, who int) (prio int, err error)
-//getpriority(which _C_int, who _C_int) _C_int
-
-//sysnb	Getrusage(who int, rusage *Rusage) (err error)
-//getrusage(who _C_int, rusage *Rusage) _C_int
 
 //sysnb	gettimeofday(tv *Timeval, tz *byte) (err error)
 //gettimeofday(tv *Timeval, tz *byte) _C_int
@@ -250,32 +259,23 @@ func Gettimeofday(tv *Timeval) (err error) {
 	return gettimeofday(tv, nil)
 }
 
-//sysnb Getuid() (uid int)
-//getuid() Uid_t
+func Getuid() (uid int) {
+	return 0
+}
 
 //sysnb	Kill(pid int, sig Signal) (err error)
 //kill(pid Pid_t, sig _C_int) _C_int
 
-//sys	Lchown(path string, uid int, gid int) (err error)
-//lchown(path *byte, uid Uid_t, gid Gid_t) _C_int
+func Lchown(path string, uid int, gid int) (err error) {
+	return ENOSYS
+}
 
 //sys	Link(oldpath string, newpath string) (err error)
 //link(oldpath *byte, newpath *byte) _C_int
 
-//sys	Mkdir(path string, mode uint32) (err error)
-//mkdir(path *byte, mode Mode_t) _C_int
-
-//sys	Mknod(path string, mode uint32, dev int) (err error)
-//mknod(path *byte, mode Mode_t, dev _dev_t) _C_int
-
-//sys	Mount(source string, target string, fstype string, flags uintptr, data string) (err error)
-//mount(source *byte, target *byte, fstype *byte, flags _C_long, data *byte) _C_int
-
-//sys	Nanosleep(time *Timespec, leftover *Timespec) (err error)
-//nanosleep(time *Timespec, leftover *Timespec) _C_int
-
-//sys	Pause() (err error)
-//pause() _C_int
+func Mkdir(path string, mode uint32) (err error) {
+	return ENOSYS
+}
 
 //sys	read(fd int, p []byte) (n int, err error)
 //read(fd _C_int, buf *byte, count Size_t) Ssize_t
@@ -283,54 +283,29 @@ func Gettimeofday(tv *Timeval) (err error) {
 //sys	readlen(fd int, p *byte, np int) (n int, err error)
 //read(fd _C_int, buf *byte, count Size_t) Ssize_t
 
-//sys	Readlink(path string, buf []byte) (n int, err error)
-//readlink(path *byte, buf *byte, bufsiz Size_t) Ssize_t
-
-//sys	Rename(oldpath string, newpath string) (err error)
-//rename(oldpath *byte, newpath *byte) _C_int
-
-//sys	Rmdir(path string) (err error)
-//rmdir(path *byte) _C_int
-
-//sys	Setdomainname(p []byte) (err error)
-//setdomainname(name *byte, len Size_t) _C_int
-
-//sys	Sethostname(p []byte) (err error)
-//sethostname(name *byte, len Size_t) _C_int
-
-//sysnb	Setgid(gid int) (err error)
-//setgid(gid Gid_t) _C_int
-
-//sysnb Setregid(rgid int, egid int) (err error)
-//setregid(rgid Gid_t, egid Gid_t) _C_int
-
-//sysnb	Setpgid(pid int, pgid int) (err error)
-//setpgid(pid Pid_t, pgid Pid_t) _C_int
-
-//sys Setpriority(which int, who int, prio int) (err error)
-//setpriority(which _C_int, who _C_int, prio _C_int) _C_int
-
-//sysnb	Setreuid(ruid int, euid int) (err error)
-//setreuid(ruid Uid_t, euid Uid_t) _C_int
-
-//sysnb	Setsid() (pid int, err error)
-//setsid() Pid_t
-
-//sysnb	settimeofday(tv *Timeval, tz *byte) (err error)
-//settimeofday(tv *Timeval, tz *byte) _C_int
-
-func Settimeofday(tv *Timeval) (err error) {
-	return settimeofday(tv, nil)
+func Readlink(path string, buf []byte) (n int, err error) {
+	return 0, ENOSYS
 }
 
-//sysnb	Setuid(uid int) (err error)
-//setuid(uid Uid_t) _C_int
+func Rename(oldpath string, newpath string) (err error) {
+	return ENOSYS
+}
 
-//sys	Symlink(oldpath string, newpath string) (err error)
-//symlink(oldpath *byte, newpath *byte) _C_int
+func Rmdir(path string) (err error) {
+	return ENOSYS
+}
 
-//sys	Sync()
-//sync()
+func Settimeofday(tv *Timeval) (err error) {
+	return ENOSYS
+}
+
+func Symlink(oldpath string, newpath string) (err error) {
+	return ENOSYS
+}
+
+func Setuid(uid int) (err error) {
+	return ENOSYS
+}
 
 //sysnb	Time(t *Time_t) (tt Time_t, err error)
 //time(t *Time_t) Time_t
@@ -338,41 +313,14 @@ func Settimeofday(tv *Timeval) (err error) {
 //sysnb	Times(tms *Tms) (ticks uintptr, err error)
 //times(tms *Tms) _clock_t
 
-//sysnb	Umask(mask int) (oldmask int)
-//umask(mask Mode_t) Mode_t
-
 //sys	Unlink(path string) (err error)
 //unlink(path *byte) _C_int
-
-//sys	Utime(path string, buf *Utimbuf) (err error)
-//utime(path *byte, buf *Utimbuf) _C_int
 
 //sys	write(fd int, p []byte) (n int, err error)
 //write(fd _C_int, buf *byte, count Size_t) Ssize_t
 
 //sys	writelen(fd int, p *byte, np int) (n int, err error)
 //write(fd _C_int, buf *byte, count Size_t) Ssize_t
-
-//sys	munmap(addr uintptr, length uintptr) (err error)
-//munmap(addr *byte, length Size_t) _C_int
-
-//sys Madvise(b []byte, advice int) (err error)
-//madvise(addr *byte, len Size_t, advice _C_int) _C_int
-
-//sys	Mprotect(b []byte, prot int) (err error)
-//mprotect(addr *byte, len Size_t, prot _C_int) _C_int
-
-//sys	Mlock(b []byte) (err error)
-//mlock(addr *byte, len Size_t) _C_int
-
-//sys	Munlock(b []byte) (err error)
-//munlock(addr *byte, len Size_t) _C_int
-
-//sys	Mlockall(flags int) (err error)
-//mlockall(flags _C_int) _C_int
-
-//sys	Munlockall() (err error)
-//munlockall() _C_int
 
 func TimespecToNsec(ts Timespec) int64 { return int64(ts.Sec)*1e9 + int64(ts.Nsec) }
 

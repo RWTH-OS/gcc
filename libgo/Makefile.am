@@ -283,8 +283,12 @@ toolexeclibgoio_DATA = \
 
 toolexeclibgologdir = $(toolexeclibgodir)/log
 
+if LIBGO_IS_HERMIT
+toolexeclibgolog_DATA =
+else
 toolexeclibgolog_DATA = \
 	log/syslog.gox
+endif
 
 toolexeclibgomathdir = $(toolexeclibgodir)/math
 
@@ -310,6 +314,9 @@ toolexeclibgonet_DATA = \
 
 toolexeclibgonethttpdir = $(toolexeclibgonetdir)/http
 
+if LIBGO_IS_HERMIT
+toolexeclibgonethttp_DATA =
+else
 toolexeclibgonethttp_DATA = \
 	net/http/cgi.gox \
 	net/http/cookiejar.gox \
@@ -317,6 +324,7 @@ toolexeclibgonethttp_DATA = \
 	net/http/httptest.gox \
 	net/http/httputil.gox \
 	net/http/pprof.gox
+endif
 
 toolexeclibgonetrpcdir = $(toolexeclibgonetdir)/rpc
 
@@ -331,10 +339,14 @@ toolexeclibgoold_DATA = \
 
 toolexeclibgoosdir = $(toolexeclibgodir)/os
 
+if LIBGO_IS_HERMIT
+toolexeclibgoos_DATA =
+else
 toolexeclibgoos_DATA = \
 	os/exec.gox \
 	os/signal.gox \
 	os/user.gox
+endif
 
 toolexeclibgopathdir = $(toolexeclibgodir)/path
 
@@ -431,7 +443,11 @@ else
 if LIBGO_IS_SOLARIS
 runtime_netpoll_files = runtime/netpoll_select.c
 else
+if LIBGO_IS_HERMIT
+runtime_netpoll_files = runtime/netpoll_stub.c
+else
 runtime_netpoll_files = runtime/netpoll_kqueue.c
+endif
 endif
 endif
 
@@ -687,39 +703,46 @@ go_mime_files = \
 	go/mime/type_unix.go
 
 if LIBGO_IS_LINUX
-go_net_cgo_file = go/net/cgo_linux.go
+go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_linux.go
 go_net_sock_file = go/net/sock_linux.go
 go_net_sockopt_file = go/net/sockopt_linux.go
 go_net_sockoptip_file = go/net/sockoptip_linux.go go/net/sockoptip_posix.go
 else
 if LIBGO_IS_IRIX
-go_net_cgo_file = go/net/cgo_linux.go
+go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_linux.go
 go_net_sock_file = go/net/sock_linux.go
 go_net_sockopt_file = go/net/sockopt_linux.go
 go_net_sockoptip_file = go/net/sockoptip_linux.go go/net/sockoptip_posix.go
 else
 if LIBGO_IS_SOLARIS
-go_net_cgo_file = go/net/cgo_linux.go
+go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_linux.go
 go_net_sock_file = go/net/sock_stub.go
 go_net_sockopt_file = go/net/sockopt_solaris.go
 go_net_sockoptip_file = go/net/sockoptip_stub.go
 else
 if LIBGO_IS_FREEBSD
-go_net_cgo_file = go/net/cgo_bsd.go
+go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_bsd.go
 go_net_sock_file = go/net/sock_bsd.go
 go_net_sockopt_file = go/net/sockopt_bsd.go
 go_net_sockoptip_file = go/net/sockoptip_bsd.go go/net/sockoptip_posix.go
 else
 if LIBGO_IS_NETBSD
-go_net_cgo_file = go/net/cgo_netbsd.go
+go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_netbsd.go
 go_net_sock_file = go/net/sock_bsd.go
 go_net_sockopt_file = go/net/sockopt_bsd.go
 go_net_sockoptip_file = go/net/sockoptip_bsd.go go/net/sockoptip_posix.go
 else
-go_net_cgo_file = go/net/cgo_bsd.go
+if LIBGO_IS_HERMIT
+go_net_cgo_file =
+go_net_sock_file = go/net/sock_stub.go
+go_net_sockopt_file = go/net/sockopt_stub.go
+go_net_sockoptip_file = go/net/sockoptip_stub.go
+else
+go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_bsd.go
 go_net_sock_file = go/net/sock_bsd.go
 go_net_sockopt_file = go/net/sockopt_bsd.go
 go_net_sockoptip_file = go/net/sockoptip_bsd.go go/net/sockoptip_posix.go
+endif
 endif
 endif
 endif
@@ -757,7 +780,11 @@ endif
 if LIBGO_IS_LINUX
 go_net_cloexec_file = go/net/sock_cloexec.go
 else
+if LIBGO_IS_HERMIT
+go_net_cloexec_file = go/net/sys_cloexec_hermit.go
+else
 go_net_cloexec_file = go/net/sys_cloexec.go
+endif
 endif
 
 if LIBGO_IS_OPENBSD
@@ -772,14 +799,21 @@ else
 if LIBGO_IS_DRAGONFLY
 go_net_tcpsockopt_file = go/net/tcpsockopt_dragonfly.go
 else
+if LIBGO_IS_HERMIT
+go_net_tcpsockopt_file = go/net/tcpsockopt_stub.go
+else
 go_net_tcpsockopt_file = go/net/tcpsockopt_unix.go
+endif
 endif
 endif
 endif
 endif
 
 if LIBGO_IS_HERMIT
-go_net_sock =
+go_net_sock =   go/net/iprawsock_hermit.go \
+		go/net/unixsock_hermit.go \
+		go/net/udpsock_hermit.go \
+		go/net/ipsock_hermit.go
 else
 go_net_sock =   go/net/iprawsock_posix.go \
 		go/net/unixsock_posix.go \
@@ -787,28 +821,29 @@ go_net_sock =   go/net/iprawsock_posix.go \
 		go/net/ipsock_posix.go
 endif
 
+if LIBGO_IS_HERMIT
+go_net_other = go/net/fd_hermit.go go/net/sock_hermit.go go/net/tcpsock_hermit.go go/net/dial_hermit.go go/net/lookup_stub.go go/net/net_hermit.go
+else
+go_net_other = go/net/fd_unix.go go/net/sock_posix.go go/net/tcpsock_posix.go go/net/file_unix.go go/net/dial.go go/net/dnsclient_unix.go go/net/lookup_unix.go go/net/sockopt_posix.go go/net/tcpsockopt_posix.go go/net/net.go
+endif
+
 go_net_common_files = \
 	$(go_net_cloexec_file) \
         go/net/iprawsock.go \
         go/net/unixsock.go \
         go/net/udpsock.go \
-	go/net/dial.go \
 	go/net/dnsclient.go \
-	go/net/dnsclient_unix.go \
 	go/net/dnsconfig_unix.go \
+	$(go_net_other) \
 	go/net/dnsmsg.go \
 	go/net/fd_mutex.go \
-	go/net/fd_unix.go \
-	go/net/file_unix.go \
 	go/net/hosts.go \
 	go/net/interface.go \
 	$(go_net_interface_file) \
 	go/net/ip.go \
 	go/net/ipsock.go \
 	go/net/lookup.go \
-	go/net/lookup_unix.go \
 	go/net/mac.go \
-	go/net/net.go \
 	go/net/parse.go \
 	go/net/pipe.go \
 	go/net/fd_poll_runtime.go \
@@ -817,19 +852,14 @@ go_net_common_files = \
 	go/net/race0.go \
 	$(go_net_sendfile_file) \
 	go/net/singleflight.go \
-	go/net/sock_posix.go \
 	$(go_net_sock_file) \
-	go/net/sockopt_posix.go \
 	$(go_net_sockopt_file) \
 	$(go_net_sockoptip_file) \
 	go/net/tcpsock.go \
-	go/net/tcpsock_posix.go \
-	go/net/tcpsockopt_posix.go \
 	$(go_net_tcpsockopt_file) \
 	$(go_net_sock)
 
 go_net_files = \
-	go/net/cgo_unix.go \
 	$(go_net_cgo_file) \
 	$(go_net_common_files)
 
@@ -839,19 +869,23 @@ go_netgo_files = \
 
 if LIBGO_IS_SOLARIS
 if LIBGO_IS_386
-go_os_dir_file = go/os/dir_largefile.go
+go_os_dir_file = go/os/dir_largefile.go go/os/dir.go
 else
 if LIBGO_IS_SPARC
-go_os_dir_file = go/os/dir_largefile.go
+go_os_dir_file = go/os/dir_largefile.go go/os/dir.go
 else
-go_os_dir_file = go/os/dir_regfile.go
+go_os_dir_file = go/os/dir_regfile.go go/os/dir.go
 endif
 endif
+else
+if LIBGO_IS_HERMIT
+go_os_dir_file =
 else
 if LIBGO_IS_LINUX
-go_os_dir_file = go/os/dir_largefile.go
+go_os_dir_file = go/os/dir_largefile.go go/os/dir.go
 else
-go_os_dir_file = go/os/dir_regfile.go
+go_os_dir_file = go/os/dir_regfile.go go/os/dir.go
+endif
 endif
 endif
 
@@ -874,7 +908,7 @@ if LIBGO_IS_RTEMS
 go_os_sys_file = go/os/sys_uname.go
 else
 if LIBGO_IS_HERMIT
-go_os_sys_file =
+go_os_sys_file = go/os/sys_hermit.go
 else
 go_os_sys_file = go/os/sys_bsd.go
 endif
@@ -935,20 +969,20 @@ if LIBGO_IS_LINUX
 go_os_pipe_file = go/os/pipe_linux.go
 else
 if LIBGO_IS_HERMIT
-go_os_pipe_file =
+go_os_pipe_file = go/os/pipe_hermit.go
 else
 go_os_pipe_file = go/os/pipe_bsd.go
 endif
 endif
 
 if LIBGO_IS_HERMIT
-go_os_exec_file =
+go_os_exec_file = go/os/exec_hermit.go
 else
-go_os_exec_file = go/os/exec_posix.go go/os/exec_unix.go
+go_os_exec_file = go/os/exec.go go/os/exec_posix.go go/os/exec_unix.go
 endif
 
 if LIBGO_IS_HERMIT
-go_os_doc_file =
+go_os_doc_file = go/os/doc_hermit.go
 else
 go_os_doc_file = go/os/doc.go
 endif
@@ -960,7 +994,7 @@ go_os_file_unix = go/os/file_unix.go
 endif
 
 if LIBGO_IS_HERMIT
-go_os_getwd =
+go_os_getwd = go/os/getwd_hermit.go
 else
 go_os_getwd = go/os/getwd.go
 endif
@@ -973,13 +1007,11 @@ endif
 
 go_os_files = \
 	$(go_os_dir_file) \
-	go/os/dir.go \
 	$(go_os_doc_file) \
 	go/os/env.go \
 	go/os/error.go \
 	go/os/error_unix.go \
-	go/os/exec.go \
-	$(exec_posix) \
+	$(go_os_exec_file) \
 	go/os/file.go \
 	go/os/file_posix.go \
 	$(go_os_file_unix) \
@@ -1088,6 +1120,9 @@ go_sync_files = \
 	go/sync/rwmutex.go \
 	go/sync/waitgroup.go
 
+if LIBGO_IS_HERMIT
+go_syslog_file =
+else
 if LIBGO_IS_SOLARIS
 go_syslog_file = go/log/syslog/syslog_libc.go
 else
@@ -1097,12 +1132,18 @@ else
 go_syslog_file = go/log/syslog/syslog_unix.go
 endif
 endif
+endif
 
+if LIBGO_IS_HERMIT
+go_log_syslog_files =
+go_syslog_c_files =
+else
 go_log_syslog_files = \
 	go/log/syslog/syslog.go \
 	$(go_syslog_file)
 go_syslog_c_files = \
 	go/log/syslog/syslog_c.c
+endif
 
 go_testing_files = \
 	go/testing/allocs.go \
@@ -1136,6 +1177,9 @@ archive_tar_atim_file = go/archive/tar/stat_atim.go
 endif
 if LIBGO_IS_SOLARIS
 archive_tar_atim_file = go/archive/tar/stat_atim.go
+endif
+if LIBGO_IS_HERMIT
+archive_tar_atim_file = go/archive/tar/stat_atim_hermit.go
 endif
 if LIBGO_IS_DARWIN
 archive_tar_atim_file = go/archive/tar/stat_atimespec.go
@@ -1563,13 +1607,21 @@ go_old_template_files = \
 	go/old/template/format.go \
 	go/old/template/parse.go
 
+if LIBGO_IS_HERMIT
+go_os_exec_files =
+else
 go_os_exec_files = \
 	go/os/exec/exec.go \
 	go/os/exec/lp_unix.go
+endif
 
+if LIBGO_IS_HERMIT
+go_os_signal_files =
+else
 go_os_signal_files = \
 	go/os/signal/signal.go \
 	go/os/signal/signal_unix.go
+endif
 
 if LIBGO_IS_SOLARIS
 os_user_decls_file = go/os/user/decls_solaris.go
@@ -1661,7 +1713,7 @@ syscall_exec_os_file =
 else
 if LIBGO_IS_HERMIT
 syscall_exec_file = go/syscall/exec_stubs.go
-syscall_exec_os_file =
+syscall_exec_os_file = go/syscall/exec_hermit.go
 else
 if LIBGO_IS_LINUX
 syscall_exec_file = go/syscall/exec_unix.go
@@ -1693,7 +1745,7 @@ if LIBGO_IS_RTEMS
 syscall_wait_c_file =
 else
 if LIBGO_IS_HERMIT
-syscall_wait_c_file =
+syscall_wait_c_file = go/syscall/wait.c
 else
 syscall_wait_c_file = go/syscall/wait.c
 endif
@@ -1976,6 +2028,18 @@ else
 os_lib_terminal = exp/terminal.lo net.lo
 endif
 
+if LIBGO_IS_HERMIT
+os_lib_signal = 
+else
+os_lib_signal = os/signal.lo
+endif
+
+if LIBGO_IS_HERMIT
+os_lib_other_exec =
+else
+os_lib_other_exec = os/exec.lo net/http/cgi.lo net/http/fcgi.lo log/syslog.lo log/syslog/syslog_c.lo syscall/wait.lo
+endif
+
 libgo_go_objs = \
 	bufio.lo \
 	bytes.lo \
@@ -2007,7 +2071,6 @@ libgo_go_objs = \
 	syscall.lo \
 	syscall/errno.lo \
 	syscall/signame.lo \
-	syscall/wait.lo \
 	testing.lo \
 	time-go.lo \
 	unicode.lo \
@@ -2073,9 +2136,7 @@ libgo_go_objs = \
 	hash/crc32.lo \
 	hash/crc64.lo \
 	hash/fnv.lo \
-	net/http/cgi.lo \
 	net/http/cookiejar.lo \
-	net/http/fcgi.lo \
 	net/http/httptest.lo \
 	net/http/httputil.lo \
 	net/http/internal.lo \
@@ -2089,8 +2150,6 @@ libgo_go_objs = \
 	index/suffixarray.lo \
 	internal/syscall.lo \
 	io/ioutil.lo \
-	log/syslog.lo \
-	log/syslog/syslog_c.lo \
 	math/big.lo \
 	math/cmplx.lo \
 	math/rand.lo \
@@ -2103,9 +2162,9 @@ libgo_go_objs = \
 	net/url.lo \
 	old/regexp.lo \
 	old/template.lo \
-	os/exec.lo \
+	$(os_lib_other_exec) \
 	$(os_lib_inotify_lo) \
-	os/signal.lo \
+	$(os_lib_signal) \
 	os/user.lo \
 	path/filepath.lo \
 	regexp/syntax.lo \
@@ -3752,8 +3811,8 @@ index/suffixarray.gox: index/suffixarray.lo
 io/ioutil.gox: io/ioutil.lo
 	$(BUILDGOX)
 
-log/syslog.gox: log/syslog.lo
-	$(BUILDGOX)
+#log/syslog.gox: log/syslog.lo
+#	$(BUILDGOX)
 
 math/big.gox: math/big.lo
 	$(BUILDGOX)
@@ -3778,18 +3837,18 @@ net/textproto.gox: net/textproto.lo
 net/url.gox: net/url.lo
 	$(BUILDGOX)
 
-net/http/cgi.gox: net/http/cgi.lo
-	$(BUILDGOX)
-net/http/cookiejar.gox: net/http/cookiejar.lo
-	$(BUILDGOX)
-net/http/fcgi.gox: net/http/fcgi.lo
-	$(BUILDGOX)
-net/http/httptest.gox: net/http/httptest.lo
-	$(BUILDGOX)
-net/http/httputil.gox: net/http/httputil.lo
-	$(BUILDGOX)
-net/http/pprof.gox: net/http/pprof.lo
-	$(BUILDGOX)
+#net/http/cgi.gox: net/http/cgi.lo
+#	$(BUILDGOX)
+#net/http/cookiejar.gox: net/http/cookiejar.lo
+#	$(BUILDGOX)
+#net/http/fcgi.gox: net/http/fcgi.lo
+#	$(BUILDGOX)
+#net/http/httptest.gox: net/http/httptest.lo
+#	$(BUILDGOX)
+#net/http/httputil.gox: net/http/httputil.lo
+#	$(BUILDGOX)
+#net/http/pprof.gox: net/http/pprof.lo
+#	$(BUILDGOX)
 
 net/http/internal.gox: net/http/internal.lo
 	$(BUILDGOX)
@@ -3802,12 +3861,12 @@ old/regexp.gox: old/regexp.lo
 old/template.gox: old/template.lo
 	$(BUILDGOX)
 
-os/exec.gox: os/exec.lo
-	$(BUILDGOX)
-os/signal.gox: os/signal.lo
-	$(BUILDGOX)
-os/user.gox: os/user.lo
-	$(BUILDGOX)
+#os/exec.gox: os/exec.lo
+#	$(BUILDGOX)
+#os/signal.gox: os/signal.lo
+#	$(BUILDGOX)
+#os/user.gox: os/user.lo
+#	$(BUILDGOX)
 
 path/filepath.gox: path/filepath.lo
 	$(BUILDGOX)
