@@ -3811,8 +3811,8 @@ index/suffixarray.gox: index/suffixarray.lo
 io/ioutil.gox: io/ioutil.lo
 	$(BUILDGOX)
 
-#log/syslog.gox: log/syslog.lo
-#	$(BUILDGOX)
+log/syslog.gox: log/syslog.lo
+	$(BUILDGOX)
 
 math/big.gox: math/big.lo
 	$(BUILDGOX)
@@ -3837,18 +3837,18 @@ net/textproto.gox: net/textproto.lo
 net/url.gox: net/url.lo
 	$(BUILDGOX)
 
-#net/http/cgi.gox: net/http/cgi.lo
-#	$(BUILDGOX)
-#net/http/cookiejar.gox: net/http/cookiejar.lo
-#	$(BUILDGOX)
-#net/http/fcgi.gox: net/http/fcgi.lo
-#	$(BUILDGOX)
-#net/http/httptest.gox: net/http/httptest.lo
-#	$(BUILDGOX)
-#net/http/httputil.gox: net/http/httputil.lo
-#	$(BUILDGOX)
-#net/http/pprof.gox: net/http/pprof.lo
-#	$(BUILDGOX)
+net/http/cgi.gox: net/http/cgi.lo
+	$(BUILDGOX)
+net/http/cookiejar.gox: net/http/cookiejar.lo
+	$(BUILDGOX)
+net/http/fcgi.gox: net/http/fcgi.lo
+	$(BUILDGOX)
+net/http/httptest.gox: net/http/httptest.lo
+	$(BUILDGOX)
+net/http/httputil.gox: net/http/httputil.lo
+	$(BUILDGOX)
+net/http/pprof.gox: net/http/pprof.lo
+	$(BUILDGOX)
 
 net/http/internal.gox: net/http/internal.lo
 	$(BUILDGOX)
@@ -3861,12 +3861,12 @@ old/regexp.gox: old/regexp.lo
 old/template.gox: old/template.lo
 	$(BUILDGOX)
 
-#os/exec.gox: os/exec.lo
-#	$(BUILDGOX)
-#os/signal.gox: os/signal.lo
-#	$(BUILDGOX)
-#os/user.gox: os/user.lo
-#	$(BUILDGOX)
+os/exec.gox: os/exec.lo
+	$(BUILDGOX)
+os/signal.gox: os/signal.lo
+	$(BUILDGOX)
+os/user.gox: os/user.lo
+	$(BUILDGOX)
 
 path/filepath.gox: path/filepath.lo
 	$(BUILDGOX)
