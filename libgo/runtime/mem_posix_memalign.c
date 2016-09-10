@@ -4,6 +4,8 @@
 #include "arch.h"
 #include "malloc.h"
 
+#define PAGE_FLOOR(addr)	(((addr) + PageSize - 1) & ~(PageSize-1))
+
 void*
 runtime_SysAlloc(uintptr n, uint64 *stat)
 {
@@ -12,7 +14,8 @@ runtime_SysAlloc(uintptr n, uint64 *stat)
 
 	mstats.sys += n;
 #ifdef __hermit__
-	p = malloc(n);
+	p = malloc(n+PageSize);
+	p = (void*) PAGE_FLOOR((size_t) p);
 #else
 	errno = posix_memalign(&p, PageSize, n);
 	if (errno > 0) {
