@@ -429,7 +429,11 @@ else
 if LIBGO_IS_NETBSD
 runtime_getncpu_file = runtime/getncpu-bsd.c
 else
+if LIBGO_IS_HERMIT
+runtime_getncpu_file = runtime/getncpu-hermit.c
+else
 runtime_getncpu_file = runtime/getncpu-none.c
+endif
 endif
 endif
 endif
