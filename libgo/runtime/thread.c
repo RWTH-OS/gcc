@@ -160,6 +160,6 @@ runtime_memlimit(void)
 
 	return rl.rlim_cur - used;
 #else
-	return (16<<20); 
+	return (128<<20);
 #endif
 }
