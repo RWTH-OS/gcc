@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <errno.h>
 
 #include "runtime.h"
@@ -12,10 +13,19 @@ runtime_SysAlloc(uintptr n, uint64 *stat)
 	USED(stat);
 	void *p;
 
-	mstats.sys += n;
 #ifdef __hermit__
-	p = malloc(n+PageSize);
-	p = (void*) PAGE_FLOOR((size_t) p);
+	size_t addr = (size_t) malloc(n+PageSize+sizeof(size_t));
+	if (!addr)
+		return NULL;
+
+	if ((addr % PageSize) == 0) {
+		p = (void*) (addr + PageSize);
+	} else {
+		// this works because newlib smallest chunk size is 32 byte
+		// => enough space for a size_t (8 byte)
+		p = (void*) PAGE_FLOOR(addr);
+	}
+	*((size_t*) p - 1) = addr;
 #else
 	errno = posix_memalign(&p, PageSize, n);
 	if (errno > 0) {
@@ -23,6 +33,8 @@ runtime_SysAlloc(uintptr n, uint64 *stat)
 		exit(2);
 	}
 #endif
+	mstats.sys += n;
+
 	return p;
 }
 
@@ -45,8 +57,15 @@ void
 runtime_SysFree(void *v, uintptr n, uint64 *stat)
 {
 	USED(stat);
-	mstats.sys -= n;
+
+#ifdef __hermit__
+	size_t addr = *((size_t*) v - 1);
+	free((void*) addr);
+#else
 	free(v);
+#endif
+
+	mstats.sys -= n;
 }
 
 // add dummy pointer for "runtime/malloc.goc"
