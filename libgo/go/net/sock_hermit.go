@@ -1,8 +1,8 @@
-// Copyright 2009 The Go Authors.  All rights reserved.
+// Copyright 2016 The Go Authors.  All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build darwin dragonfly freebsd linux nacl netbsd openbsd solaris windows
+// +build hermit
 
 package net
 
@@ -207,6 +207,7 @@ func (fd *netFD) listenDatagram(laddr sockaddr) error {
 			return os.NewSyscallError("bind", err)
 		}
 	}
+	// doen't work with LwIP
 	if err := fd.init(); err != nil {
 		return err
 	}

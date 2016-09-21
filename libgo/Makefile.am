@@ -314,9 +314,6 @@ toolexeclibgonet_DATA = \
 
 toolexeclibgonethttpdir = $(toolexeclibgonetdir)/http
 
-if LIBGO_IS_HERMIT
-toolexeclibgonethttp_DATA =
-else
 toolexeclibgonethttp_DATA = \
 	net/http/cgi.gox \
 	net/http/cookiejar.gox \
@@ -324,7 +321,6 @@ toolexeclibgonethttp_DATA = \
 	net/http/httptest.gox \
 	net/http/httputil.gox \
 	net/http/pprof.gox
-endif
 
 toolexeclibgonetrpcdir = $(toolexeclibgonetdir)/rpc
 
@@ -340,7 +336,7 @@ toolexeclibgoold_DATA = \
 toolexeclibgoosdir = $(toolexeclibgodir)/os
 
 if LIBGO_IS_HERMIT
-toolexeclibgoos_DATA =
+toolexeclibgoos_DATA = os/exec.gox
 else
 toolexeclibgoos_DATA = \
 	os/exec.gox \
@@ -448,7 +444,7 @@ if LIBGO_IS_SOLARIS
 runtime_netpoll_files = runtime/netpoll_select.c
 else
 if LIBGO_IS_HERMIT
-runtime_netpoll_files = runtime/netpoll_stub.c
+runtime_netpoll_files = runtime/netpoll_select.c
 else
 runtime_netpoll_files = runtime/netpoll_kqueue.c
 endif
@@ -737,9 +733,9 @@ go_net_sockopt_file = go/net/sockopt_bsd.go
 go_net_sockoptip_file = go/net/sockoptip_bsd.go go/net/sockoptip_posix.go
 else
 if LIBGO_IS_HERMIT
-go_net_cgo_file =
+go_net_cgo_file =  go/net/cgo_stub.go
 go_net_sock_file = go/net/sock_stub.go
-go_net_sockopt_file = go/net/sockopt_stub.go
+go_net_sockopt_file = go/net/sockopt_hermit.go
 go_net_sockoptip_file = go/net/sockoptip_stub.go
 else
 go_net_cgo_file = go/net/cgo_unix.go go/net/cgo_bsd.go
@@ -826,9 +822,9 @@ go_net_sock =   go/net/iprawsock_posix.go \
 endif
 
 if LIBGO_IS_HERMIT
-go_net_other = go/net/fd_hermit.go go/net/sock_hermit.go go/net/tcpsock_hermit.go go/net/dial_hermit.go go/net/lookup_stub.go go/net/net_hermit.go
+go_net_other = go/net/fd_hermit.go go/net/sock_hermit.go go/net/tcpsock_hermit.go go/net/file_stub.go go/net/dial_hermit.go go/net/lookup_stub.go go/net/fd_poll_runtime.go
 else
-go_net_other = go/net/fd_unix.go go/net/sock_posix.go go/net/tcpsock_posix.go go/net/file_unix.go go/net/dial.go go/net/dnsclient_unix.go go/net/lookup_unix.go go/net/sockopt_posix.go go/net/tcpsockopt_posix.go go/net/net.go
+go_net_other = go/net/fd_unix.go go/net/sock_posix.go go/net/tcpsock_posix.go go/net/file_unix.go go/net/dial.go go/net/dnsclient_unix.go go/net/lookup_unix.go go/net/sockopt_posix.go go/net/tcpsockopt_posix.go go/net/fd_poll_runtime.go
 endif
 
 go_net_common_files = \
@@ -850,10 +846,10 @@ go_net_common_files = \
 	go/net/mac.go \
 	go/net/parse.go \
 	go/net/pipe.go \
-	go/net/fd_poll_runtime.go \
 	go/net/port.go \
 	go/net/port_unix.go \
 	go/net/race0.go \
+	go/net/net.go \
 	$(go_net_sendfile_file) \
 	go/net/singleflight.go \
 	$(go_net_sock_file) \
@@ -927,7 +923,11 @@ else
 if LIBGO_IS_DARWIN
 go_os_cloexec_file = go/os/sys_darwin.go
 else
+if LIBGO_IS_HERMIT
+go_os_cloexec_file =
+else
 go_os_cloexec_file = go/os/sys_unix.go
+endif
 endif
 endif
 
@@ -980,7 +980,7 @@ endif
 endif
 
 if LIBGO_IS_HERMIT
-go_os_exec_file = go/os/exec_hermit.go
+go_os_exec_file = go/os/exec.go go/os/exec_hermit.go
 else
 go_os_exec_file = go/os/exec.go go/os/exec_posix.go go/os/exec_unix.go
 endif
@@ -1611,13 +1611,13 @@ go_old_template_files = \
 	go/old/template/format.go \
 	go/old/template/parse.go
 
-if LIBGO_IS_HERMIT
-go_os_exec_files =
-else
+#if LIBGO_IS_HERMIT
+#go_os_exec_files =
+#else
 go_os_exec_files = \
 	go/os/exec/exec.go \
 	go/os/exec/lp_unix.go
-endif
+#endif
 
 if LIBGO_IS_HERMIT
 go_os_signal_files =
@@ -1835,7 +1835,7 @@ if LIBGO_IS_SOLARIS
 syscall_socket_os_file = go/syscall/socket_xnet.go
 else
 if LIBGO_IS_HERMIT
-syscall_socket_os_file = go/syscall/socket_posix_hermit.go
+syscall_socket_os_file =
 else
 syscall_socket_os_file = go/syscall/socket_posix.go
 endif
@@ -2039,7 +2039,7 @@ os_lib_signal = os/signal.lo
 endif
 
 if LIBGO_IS_HERMIT
-os_lib_other_exec =
+os_lib_other_exec = os/exec.lo
 else
 os_lib_other_exec = os/exec.lo net/http/cgi.lo net/http/fcgi.lo log/syslog.lo log/syslog/syslog_c.lo syscall/wait.lo
 endif
@@ -2216,13 +2216,13 @@ libgolibbegin_a_SOURCES = \
 
 libgolibbegin_a_CFLAGS = $(AM_CFLAGS) -fPIC
 
-if LIBGO_IS_HERMIT
-libnetgo_a_SOURCES =
-libnetgo_a_LIBADD =
-else
+#if LIBGO_IS_HERMIT
+#libnetgo_a_SOURCES =
+#libnetgo_a_LIBADD =
+#else
 libnetgo_a_SOURCES = $(go_netgo_files)
 libnetgo_a_LIBADD = netgo.o
-endif
+#endif
 
 LTLDFLAGS = $(shell $(SHELL) $(top_srcdir)/../libtool-ldflags $(LDFLAGS))
 

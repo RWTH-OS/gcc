@@ -20,30 +20,30 @@ package os
 // higher-level interfaces.
 //
 // If there is an error, it will be of type *PathError.
-/*func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) {
+func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) {
 	return startProcess(name, argv, attr)
-}*/
+}
 
 // Release releases any resources associated with the Process p,
 // rendering it unusable in the future.
 // Release only needs to be called if Wait is not.
-/*func (p *Process) Release() error {
+func (p *Process) Release() error {
 	return p.release()
-}*/
+}
 
 // Kill causes the Process to exit immediately.
-/*func (p *Process) Kill() error {
+func (p *Process) Kill() error {
 	return p.kill()
-}*/
+}
 
 // Wait waits for the Process to exit, and then returns a
 // ProcessState describing its status and an error, if any.
 // Wait releases any resources associated with the Process.
 // On most operating systems, the Process must be a child
 // of the current process or an error will be returned.
-/*func (p *Process) Wait() (*ProcessState, error) {
+func (p *Process) Wait() (*ProcessState, error) {
 	return p.wait()
-}*/
+}
 
 // Signal sends a signal to the Process.
 // Sending Interrupt on Windows is not implemented.
@@ -68,9 +68,9 @@ package os
 
 // Success reports whether the program exited successfully,
 // such as with exit status 0 on Unix.
-/*func (p *ProcessState) Success() bool {
+func (p *ProcessState) Success() bool {
 	return p.success()
-}*/
+}
 
 // Sys returns system-dependent exit information about
 // the process.  Convert it to the appropriate underlying

@@ -97,6 +97,11 @@ import (
 //             On GNU/Linux, could use fcntl F_DUPFD_CLOEXEC
 //             instead of the ForkLock, but only for dup(fd, -1).
 
+// dummy data type
+type SysProcAttr struct {
+	Chroot      string         // Chroot.
+}
+
 var ForkLock sync.RWMutex
 
 // StringSlicePtr is deprecated. Use SlicePtrFromStrings instead.
@@ -130,7 +135,7 @@ func SlicePtrFromStrings(ss []string) ([]*byte, error) {
 func CloseOnExec(fd int) { /*fcntl(fd, F_SETFD, FD_CLOEXEC)*/ }
 
 func SetNonblock(fd int, nonblocking bool) (err error) {
-	/*flag, err := fcntl(fd, F_GETFL, 0)
+	flag, err := fcntl(fd, F_GETFL, 0)
 	if err != nil {
 		return err
 	}
@@ -140,8 +145,7 @@ func SetNonblock(fd int, nonblocking bool) (err error) {
 		flag &= ^O_NONBLOCK
 	}
 	_, err = fcntl(fd, F_SETFL, flag)
-	return err*/
-	return ENOSYS
+	return err
 }
 
 // Credential holds user and group identities to be assumed
@@ -154,12 +158,12 @@ func SetNonblock(fd int, nonblocking bool) (err error) {
 
 // ProcAttr holds attributes that will be applied to a new process started
 // by StartProcess.
-/*type ProcAttr struct {
+type ProcAttr struct {
 	Dir   string    // Current working directory.
 	Env   []string  // Environment.
 	Files []uintptr // File descriptors.
 	Sys   *SysProcAttr
-}*/
+}
 
 //var zeroProcAttr ProcAttr
 //var zeroSysProcAttr SysProcAttr
@@ -271,10 +275,11 @@ error:
 }*/
 
 // StartProcess wraps ForkExec for package os.
-/*func StartProcess(argv0 string, argv []string, attr *ProcAttr) (pid int, handle uintptr, err error) {
-	pid, err = forkExec(argv0, argv, attr)
-	return pid, 0, err
-}*/
+func StartProcess(argv0 string, argv []string, attr *ProcAttr) (pid int, handle uintptr, err error) {
+	//pid, err = forkExec(argv0, argv, attr)
+	//return pid, 0, err
+	return 0, 0, ENOSYS
+}
 
 // Ordinary exec.
 /*func Exec(argv0 string, argv []string, envv []string) (err error) {

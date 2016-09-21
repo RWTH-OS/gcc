@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build darwin dragonfly freebsd linux nacl netbsd openbsd solaris
+// +build hermit
 
 package os
 
@@ -81,9 +81,9 @@ func OpenFile(name string, flag int, perm FileMode) (file *File, err error) {
 
 	// There's a race here with fork/exec, which we are
 	// content to live with.  See ../syscall/exec_unix.go.
-	/*if !supportsCloseOnExec {
+	if !supportsCloseOnExec {
 		syscall.CloseOnExec(r)
-	}*/
+	}
 
 	return NewFile(uintptr(r), name), nil
 }

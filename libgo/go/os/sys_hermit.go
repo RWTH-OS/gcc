@@ -1,12 +1,16 @@
-// Copyright 2011 The Go Authors. All rights reserved.
+// Copyright 2016 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// For systems which only store the hostname in uname (Solaris).
+// workaround to determine the hostname on HermitCore
 
 package os
 
 //import "syscall"
+
+// supportsCloseOnExec reports whether the platform supports the
+// O_CLOEXEC flag.
+const supportsCloseOnExec = false
 
 func hostname() (name string, err error) {
 	/*var u syscall.Utsname

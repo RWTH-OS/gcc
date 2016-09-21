@@ -253,6 +253,10 @@ func Getgid() (gid int)  {
 //sysnb	Getpid() (pid int)
 //getpid() Pid_t
 
+func Getppid() (ppid int) {
+	return 0;
+}
+
 //sysnb	gettimeofday(tv *Timeval, tz *byte) (err error)
 //gettimeofday(tv *Timeval, tz *byte) _C_int
 func Gettimeofday(tv *Timeval) (err error) {

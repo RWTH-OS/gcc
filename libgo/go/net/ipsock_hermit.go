@@ -1,10 +1,10 @@
-// Copyright 2009 The Go Authors.  All rights reserved.
+// Copyright 2016 The Go Authors.  All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build darwin dragonfly freebsd linux nacl netbsd openbsd solaris windows
+// +build hermit
 
-// Internet protocol family sockets for POSIX
+// Internet protocol family sockets for POSIX (only IPv4)
 
 package net
 
@@ -107,28 +107,29 @@ func probeIPv6Stack() (supportsIPv6, supportsIPv4map bool) {
 // Note that OpenBSD allows neither "net.inet6.ip6.v6only=1" change
 // nor IPPROTO_IPV6 level IPV6_V6ONLY socket option setting.
 func favoriteAddrFamily(net string, laddr, raddr sockaddr, mode string) (family int, ipv6only bool) {
-	switch net[len(net)-1] {
+	/*switch net[len(net)-1] {
 	case '4':
 		return syscall.AF_INET, false
-	/*case '6':
-		return syscall.AF_INET6, true*/
+	case '6':
+		return syscall.AF_INET6, true
 	}
 
 	if mode == "listen" && (laddr == nil || laddr.isWildcard()) {
-		/*if supportsIPv4map {
+		if supportsIPv4map {
 			return syscall.AF_INET6, false
-		}*/
+		}
 		if laddr == nil {
 			return syscall.AF_INET, false
 		}
 		return laddr.family(), false
 	}
 
-	//if (laddr == nil || laddr.family() == syscall.AF_INET) &&
-	//	(raddr == nil || raddr.family() == syscall.AF_INET) {
+	if (laddr == nil || laddr.family() == syscall.AF_INET) &&
+		(raddr == nil || raddr.family() == syscall.AF_INET) {
 		return syscall.AF_INET, false
-	//}
-	//return syscall.AF_INET6, false
+	}
+	return syscall.AF_INET6, false*/
+	return syscall.AF_INET, false
 }
 
 // Internet sockets (TCP, UDP, IP)

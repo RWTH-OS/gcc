@@ -176,6 +176,9 @@ func Getpeername(fd int) (sa Sockaddr, err error) {
 	return anyToSockaddr(&rsa)
 }
 
+//sys   bind(fd int, sa *RawSockaddrAny, len Socklen_t) (err error)
+//bind(fd _C_int, sa *RawSockaddrAny, len Socklen_t) _C_int
+
 func Bind(fd int, sa Sockaddr) (err error) {
 	ptr, n, err := sa.sockaddr()
 	if err != nil {
@@ -183,6 +186,9 @@ func Bind(fd int, sa Sockaddr) (err error) {
 	}
 	return bind(fd, ptr, n)
 }
+
+//sys   connect(s int, addr *RawSockaddrAny, addrlen Socklen_t) (err error)
+//connect(s _C_int, addr *RawSockaddrAny, addrlen Socklen_t) _C_int
 
 func Connect(fd int, sa Sockaddr) (err error) {
 	ptr, n, err := sa.sockaddr()
@@ -192,12 +198,19 @@ func Connect(fd int, sa Sockaddr) (err error) {
 	return connect(fd, ptr, n)
 }
 
+//sysnb socket(domain int, typ int, proto int) (fd int, err error)
+//socket(domain _C_int, typ _C_int, protocol _C_int) _C_int
+
 func Socket(domain, typ, proto int) (fd int, err error) {
 	if /*domain == AF_INET6 &&*/ SocketDisableIPv6 {
 		return -1, EAFNOSUPPORT
 	}
 	fd, err = socket(domain, typ, proto)
 	return
+}
+
+func socketpair(domain int, typ int, proto int, fd *[2]_C_int) (err error) {
+	return ENOSYS
 }
 
 func Socketpair(domain, typ, proto int) (fd [2]int, err error) {
@@ -209,6 +222,9 @@ func Socketpair(domain, typ, proto int) (fd [2]int, err error) {
 	}
 	return
 }
+
+//sys   getsockopt(s int, level int, name int, val unsafe.Pointer, vallen *Socklen_t) (err error)
+//getsockopt(s _C_int, level _C_int, name _C_int, val *byte, vallen *Socklen_t) _C_int
 
 func GetsockoptByte(fd, level, opt int) (value byte, err error) {
 	var n byte
@@ -316,6 +332,9 @@ func Recvfrom(fd int, p []byte, flags int) (n int, from Sockaddr, err error) {
 	return
 }
 
+//sys   sendto(s int, buf []byte, flags int, to *RawSockaddrAny, tolen Socklen_t) (err error)
+//sendto(s _C_int, buf *byte, len Size_t, flags _C_int, to *RawSockaddrAny, tolen Socklen_t) Ssize_t
+
 func Sendto(fd int, p []byte, flags int, to Sockaddr) (err error) {
 	ptr, n, err := to.sockaddr()
 	if err != nil {
@@ -402,20 +421,8 @@ func SendmsgN(fd int, p, oob []byte, to Sockaddr, flags int) (n int, err error) 
 	return n, nil
 }*/
 
-//sys	Listen(fd int, n int) (err error)
+//sys   Listen(fd int, n int) (err error)
 //listen(fd _C_int, n _C_int) _C_int
 
-//sys	Shutdown(fd int, how int) (err error)
+//sys   Shutdown(fd int, how int) (err error)
 //shutdown(fd _C_int, how _C_int) _C_int
-
-/*func (iov *Iovec) SetLen(length int) {
-	iov.Len = Iovec_len_t(length)
-}
-
-func (msghdr *Msghdr) SetControllen(length int) {
-	msghdr.Controllen = Msghdr_controllen_t(length)
-}
-
-func (cmsg *Cmsghdr) SetLen(length int) {
-	cmsg.Len = Cmsghdr_len_t(length)
-}*/

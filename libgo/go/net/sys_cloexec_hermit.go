@@ -3,9 +3,10 @@
 // license that can be found in the LICENSE file.
 
 // This file implements sysSocket and accept for platforms that do not
-// provide a fast path for setting SetNonblock and CloseOnExec.
+// provide a fast path for setting SetNonblock.
+// Furthermore, HermitCore doesn't support CloseOnExec.
 
-// +build darwin dragonfly nacl netbsd openbsd solaris
+// +build hermit
 
 package net
 
@@ -24,10 +25,10 @@ func sysSocket(family, sotype, proto int) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	if err = syscall.SetNonblock(s, true); err != nil {
+	/*if err = syscall.SetNonblock(s, true); err != nil {
 		syscall.Close(s)
 		return -1, err
-	}
+	}*/
 	return s, nil
 }
 
@@ -46,9 +47,9 @@ func accept(s int) (int, syscall.Sockaddr, error) {
 	if err != nil {
 		return -1, nil, err
 	}
-	if err = syscall.SetNonblock(ns, true); err != nil {
+	/*if err = syscall.SetNonblock(ns, true); err != nil {
 		syscall.Close(ns)
 		return -1, nil, err
-	}
+	}*/
 	return ns, sa, nil
 }

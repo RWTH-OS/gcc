@@ -5,7 +5,7 @@
 package os
 
 import (
-	/*"runtime"*/
+	"runtime"
 	"sync/atomic"
 	"syscall"
 )
@@ -17,11 +17,11 @@ type Process struct {
 	isdone uint32 // process has been successfully waited on, non zero if true
 }
 
-/*func newProcess(pid int, handle uintptr) *Process {
+func newProcess(pid int, handle uintptr) *Process {
 	p := &Process{Pid: pid, handle: handle}
 	runtime.SetFinalizer(p, (*Process).Release)
 	return p
-}*/
+}
 
 func (p *Process) setDone() {
 	atomic.StoreUint32(&p.isdone, 1)
@@ -52,7 +52,7 @@ type ProcAttr struct {
 	// Note that setting this field means that your program
 	// may not execute properly or even compile on some
 	// operating systems.
-	/* Sys *syscall.SysProcAttr */
+	Sys *syscall.SysProcAttr
 }
 
 // A Signal represents an operating system signal.
