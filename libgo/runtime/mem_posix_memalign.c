@@ -33,7 +33,8 @@ runtime_SysAlloc(uintptr n, uint64 *stat)
 		exit(2);
 	}
 #endif
-	mstats.sys += n;
+	if (stat)
+		runtime_xadd64(stat, n);
 
 	return p;
 }
@@ -65,7 +66,8 @@ runtime_SysFree(void *v, uintptr n, uint64 *stat)
 	free(v);
 #endif
 
-	mstats.sys -= n;
+	if (stat)
+		runtime_xadd64(stat, -(uint64)n);
 }
 
 // add dummy pointer for "runtime/malloc.goc"
