@@ -101,18 +101,31 @@ runtime_goargs(void)
 	args.__capacity = argc;
 }
 
+#ifdef __hermit__
+extern char **environ;
+#endif
+
 void
 runtime_goenvs_unix(void)
 {
 	String *s;
 	int32 i, n;
 
+#ifdef __hermit__
+	for(n=0; environ[n] != 0; n++)
+		;
+
+	s = runtime_malloc(n*sizeof s[0]);
+	for(i=0; i<n; i++)
+		s[i] = runtime_gostringnocopy((const byte*) environ[i]);
+#else
 	for(n=0; argv[argc+1+n] != 0; n++)
 		;
 
 	s = runtime_malloc(n*sizeof s[0]);
 	for(i=0; i<n; i++)
 		s[i] = runtime_gostringnocopy(argv[argc+1+i]);
+#endif
 	envs.__values = (void*)s;
 	envs.__count = n;
 	envs.__capacity = n;
