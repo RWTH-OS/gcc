@@ -21,7 +21,7 @@ script:
 - tar xzf bootstrap.tar.gz
 - mkdir -p $TOPDIR/tmp/bootstrap
 - cd $TOPDIR/tmp/bootstrap
-- $TOPDIR/RWTH-OS/gcc/configure --target=x86_64-hermit --prefix=$TOPDIR/x86 --prefix=$(TOPDIR)/$(ARCH) --without-headers --with-newlib --with-isl --disable-multilib --with-tune=generic --enable-languages=c,c++,lto --disable-nls --disable-shared --disable-libssp --enable-threads=posix --disable-libgomp --enable-tls --enable-lto --disable-symvers
+- $TOPDIR/RWTH-OS/gcc/configure --target=x86_64-hermit --prefix=$TOPDIR/x86 --without-headers --with-newlib --with-isl --disable-multilib --with-tune=generic --enable-languages=c,c++,lto --disable-nls --disable-shared --disable-libssp --enable-threads=posix --disable-libgomp --enable-tls --enable-lto --disable-symvers
 - make -j2
 - make install
 env:
