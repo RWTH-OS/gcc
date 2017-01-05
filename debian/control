@@ -8,7 +8,7 @@ Homepage: http://www.hermitcore.org
 #Vcs-Git: git://anonscm.debian.org/collab-maint/gcc.git
 #Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/gcc.git
 
-Package: gcc
+Package: gcc-hermit
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: HermitCore's Cross Compiler
