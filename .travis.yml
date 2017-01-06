@@ -20,13 +20,11 @@ script:
 - sudo dpkg -i ./newlib-hermit_2.4.0-1_amd64.deb
 - wget https://bintray.com/rwth-os/hermitcore/download_file?file_path=pthread-embedded-hermit_1.0-1_amd64.deb -O pthread-embedded-hermit_1.0-1_amd64.deb
 - sudo dpkg -i ./pthread-embedded-hermit_1.0-1_amd64.deb
-- wget https://www.lankes.org/deploy/bootstrap.tar.gz
-- tar xzf bootstrap.tar.gz
 - mkdir -p $TOPDIR/tmp/bootstrap
 - cd $TOPDIR/tmp/bootstrap
 - $TOPDIR/RWTH-OS/gcc-5.3.1/configure --target=x86_64-hermit --prefix=/opt/hermit --without-headers --with-newlib --with-isl --disable-multilib --with-tune=generic --enable-languages=c,c++,lto --disable-nls --disable-shared --disable-libssp --enable-threads=posix --disable-libgomp --enable-tls --enable-lto --disable-symvers
-- make -j2
-- sudo make install
+- make -j2 all-gcc
+- sudo make install-gcc
 - cd $TOPDIR/RWTH-OS/gcc-5.3.1
 - debuild -us -uc
 deploy:
@@ -40,7 +38,7 @@ deploy:
 env:
    global:
      - TOPDIR=/home/travis/build
-     - PATH=$PATH:/opt/hermit/bin/:$TOPDIR/x86/bin
+     - PATH=$PATH:/opt/hermit/bin/
      - CROSSCOMPREFIX = x86_64-hermit
      - STACKPROT = -fno-stack-protector
      - FC_FOR_TARGET = $CROSSCOMPREFIX-gfortran
