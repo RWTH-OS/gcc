@@ -28,7 +28,7 @@ script:
 - make -j2
 - sudo make install
 - cd $TOPDIR/RWTH-OS/gcc-5.3.1
-- debuild -e PATH -us -uc
+- debuild -us -uc
 env:
    global:
      - TOPDIR=/home/travis/build
