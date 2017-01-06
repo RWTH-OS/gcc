@@ -9,6 +9,7 @@ before_install:
 - sudo apt-get install -y nasm texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev
   packaging-dev
 script:
+- pwd
 - rm -rf .git
 - cd ..
 - mv gcc gcc-5.3.1
@@ -20,6 +21,7 @@ script:
 - sudo dpkg -i ./newlib-hermit_2.4.0-1_amd64.deb
 - wget https://bintray.com/rwth-os/hermitcore/download_file?file_path=pthread-embedded-hermit_1.0-1_amd64.deb -O pthread-embedded-hermit_1.0-1_amd64.deb
 - sudo dpkg -i ./pthread-embedded-hermit_1.0-1_amd64.deb
+- cd $TOPDIR/RWTH-OS/gcc-5.3.1
 - debuild -uc -us
 - ls -l /opt/hermit/bin
 deploy:
