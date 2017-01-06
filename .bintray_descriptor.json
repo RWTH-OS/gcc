@@ -5,16 +5,16 @@
         "subject": "rwth-os",
         "website_url": "http://www.hermitcore.org",
         "issue_tracker_url": "https://github.com/RWTH-OS/HermitCore/issues",
-        "vcs_url": "https://github.com/RWTH-OS/newlib.git",
+        "vcs_url": "https://github.com/RWTH-OS/gcc.git",
         "github_release_notes_file": "RELEASE",
-        "licenses": ["LGPL 2.1"],
+        "licenses": ["GPL2"],
         "public_download_numbers": false,
         "public_stats": false
     },
 
     "version": {
-        "name": "1.0",
-        "desc": "HermitCore's cross compiler",
+        "name": "5.3.1",
+        "desc": "Cross-build compiler for HermitCore",
         "gpgSign": false
     },
 
