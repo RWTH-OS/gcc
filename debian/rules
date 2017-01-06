@@ -15,13 +15,11 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=-format
 
 
 %:
-	dh $@  --builddirectory=build --parallel --max-parallel=2 #--with autotools_dev
+	dh $@  --builddirectory=builddeb --parallel --max-parallel=2 #--with autotools_dev
 
 
 # dh_make generated override targets
 # This is example for Cmake (See https://bugs.debian.org/641051 )
 override_dh_auto_configure:
-	mkdir -p build
-	cd build
-	./configure --target=x86_64-hermit --prefix=/opt/hermit --without-headers --with-newlib --with-isl --disable-multilib --with-tune=generic --without-libatomic --enable-languages=c,c++,fortran,go,lto --disable-nls --disable-shared --disable-libssp --enable-threads=posix --disable-libgomp --enable-tls --enable-lto --disable-symvers
+	mkdir -p builddeb; cd builddeb; ../configure --target=x86_64-hermit --prefix=/opt/hermit --without-headers --with-newlib --with-isl --disable-multilib --with-tune=generic --without-libatomic --enable-languages=c,c++,fortran,go,lto --disable-nls --disable-shared --disable-libssp --enable-threads=posix --disable-libgomp --enable-tls --enable-lto --disable-symvers
 
