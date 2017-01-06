@@ -26,7 +26,9 @@ script:
 - make -j2 all-gcc V=0
 - sudo make install-gcc
 - cd $TOPDIR/RWTH-OS/gcc-5.3.1
-- debuild -us -uc
+- make -j2 all
+- sudo make install
+- ls -l /opt/hermit/bin
 deploy:
   on: production
   provider: bintray
