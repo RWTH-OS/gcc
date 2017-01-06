@@ -28,7 +28,7 @@ script:
 - make -j2 all
 - sudo make install
 - cd $TOPDIR/RWTH-OS/gcc-5.3.1
-- debuild -e PATH -uc -us
+- debuild -e PATH -e CC_FOR_TARGET -e CXX_FOR_TARGET -e CXX_FOR_TARGET -e CPP_FOR_TARGET -e AR_FOR_TARGET -e AS_FOR_TARGET -e LD_FOR_TARGET -e OBJDUMP_FOR_TARGET -e OBJCOPY_FOR_TARGET -e RANLIB_FOR_TARGET -e STRIP_FOR_TARGET -e READELF_FOR_TARGET -e ELFEDIT_FOR_TARGET -e CFLAGS_FOR_TARGET -e FCFLAGS_FOR_TARGET -e FFLAGS_FOR_TARGET -e CXXFLAGS_FOR_TARGET -uc -us
 - ls -l /opt/hermit/bin
 deploy:
   on: production
