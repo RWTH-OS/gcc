@@ -8,7 +8,6 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install -y gcc g++ nasm texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev packaging-dev
 script:
-- pwd
 - rm -rf .git
 - cd ..
 - mv gcc gcc-5.3.1
@@ -29,7 +28,7 @@ script:
 - sudo make install
 - cd $TOPDIR/RWTH-OS/gcc-5.3.1
 - rm -rf $TOPDIR/x86/bin
-- debuild -e PATH -e FC_FOR_TARGET -e CC_FOR_TARGET -e CXX_FOR_TARGET -e GCC_FOR_TARGET -e CPP_FOR_TARGET -e AR_FOR_TARGET -e AS_FOR_TARGET -e LD_FOR_TARGET -e OBJDUMP_FOR_TARGET -e OBJCOPY_FOR_TARGET -e RANLIB_FOR_TARGET -e STRIP_FOR_TARGET -e READELF_FOR_TARGET -e ELFEDIT_FOR_TARGET -e NM_FOR_TARGET -e CFLAGS_FOR_TARGET -e FCFLAGS_FOR_TARGET -e FFLAGS_FOR_TARGET -e CXXFLAGS_FOR_TARGET -uc -us
+- debuild -e PATH -e FC_FOR_TARGET=x86_64-hermit-fc -e CC_FOR_TARGET=x86_64-hermit-gcc -e CXX_FOR_TARGET=x86_64-hermit-g++ -e GCC_FOR_TARGET=x86_64-hermit-gcc -e CPP_FOR_TARGET=x86_64-hermit-cpp -e AR_FOR_TARGET=x86_64-hermit-ar -e AS_FOR_TARGET=x86_64-hermit-as -e LD_FOR_TARGET=x86_64-hermit-ld -e OBJDUMP_FOR_TARGET=x86_64-hermit-objdump -e OBJCOPY_FOR_TARGET=x86_64-hermit-objcopy -e RANLIB_FOR_TARGET=x86_64-hermit-ranlib -e STRIP_FOR_TARGET=x86_64-hermit-strip -e READELF_FOR_TARGET=x86_64-hermit-readelf -e ELFEDIT_FOR_TARGET=x86_64-hermit-elfedit -e NM_FOR_TARGET=x86_64-hermit-nm -e CFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize" -e FCFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize" -e FFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize" -e CXXFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize" -uc -us
 - ls -l /opt/hermit/bin
 deploy:
   on: production
@@ -43,24 +42,3 @@ env:
    global:
      - TOPDIR=/home/travis/build
      - PATH=$PATH:/opt/hermit/bin:$TOPDIR/x86/bin
-     - CROSSCOMPREFIX = x86_64-hermit
-     - STACKPROT = -fno-stack-protector
-     - FC_FOR_TARGET = $CROSSCOMPREFIX-gfortran
-     - CC_FOR_TARGET = $CROSSCOMPREFIX-gcc
-     - CXX_FOR_TARGET = $CROSSCOMPREFIX-g++
-     - GCC_FOR_TARGET = $CROSSCOMPREFIX-gcc
-     - CPP_FOR_TARGET = $CROSSCOMPREFIX-cpp
-     - AR_FOR_TARGET = $CROSSCOMPREFIX-ar
-     - AS_FOR_TARGET = $CROSSCOMPREFIX-as
-     - LD_FOR_TARGET = $CROSSCOMPREFIX-ld
-     - NM_FOR_TARGET = $CROSSCOMPREFIX-nm
-     - OBJDUMP_FOR_TARGET = $CROSSCOMPREFIX-objdump
-     - OBJCOPY_FOR_TARGET = $CROSSCOMPREFIX-objcopy
-     - RANLIB_FOR_TARGET = $CROSSCOMPREFIX-ranlib
-     - STRIP_FOR_TARGET = $CROSSCOMPREFIX-strip
-     - READELF_FOR_TARGET = $CROSSCOMPREFIX-readelf
-     - ELFEDIT_FOR_TARGET = $CROSSCOMPREFIX-elfedit
-     - CFLAGS_FOR_TARGET = -m64 -mtls-direct-seg-refs -O3 -ftree-vectorize $STACKPROT
-     - FCFLAGS_FOR_TARGET = -m64 -mtls-direct-seg-refs -O3 -ftree-vectorize
-     - FFLAGS_FOR_TARGET = -m64 -mtls-direct-seg-refs -O3 -ftree-vectorize
-     - CXXFLAGS_FOR_TARGET = -m64 -mtls-direct-seg-refs -O3 -ftree-vectorize
