@@ -19,8 +19,8 @@ script:
 - make install-gcc
 after_success:
 - cd $TOPDIR
-- rm -rf tmp/bootstrap/*
-- tar -czf bootstrap.tar.gz tmp x86
+- rm -rf tmp
+- tar -czf bootstrap.tar.gz x86
 - export SSHPASS=$DEPLOY_PASS
 - sshpass -e scp -o stricthostkeychecking=no bootstrap.tar.gz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH 2> /dev/null
 env:
