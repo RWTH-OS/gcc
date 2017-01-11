@@ -6,7 +6,7 @@ language: c
 compiler: gcc
 before_install:
 - sudo apt-get -qq update
-- sudo apt-get install -y zlib1g-dev nasm texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev
+- sudo apt-get install -y nasm texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev
   sshpass
 script:
 - cd $TOPDIR
@@ -14,7 +14,7 @@ script:
 - sudo dpkg -i ./binutils-hermit_2.26.1-1_amd64.deb
 - mkdir -p $TOPDIR/tmp/bootstrap
 - cd $TOPDIR/tmp/bootstrap
-- $TOPDIR/RWTH-OS/gcc/configure --target=x86_64-hermit --prefix=$TOPDIR/x86 --without-headers --with-system-zlib --disable-checking --disable-multilib --with-isl --with-tune=generic --enable-languages=c,lto --disable-nls --disable-shared --disable-libssp --disable-libgomp --enable-threads=posix --enable-tls --enable-lto --disable-symvers
+- $TOPDIR/RWTH-OS/gcc/configure --target=x86_64-hermit --prefix=$TOPDIR/x86 --without-headers --disable-checking --disable-multilib --with-isl --with-tune=generic --enable-languages=c,lto --disable-nls --disable-shared --disable-libssp --disable-libgomp --enable-threads=posix --enable-tls --enable-lto --disable-symvers
 - make -j2 all-gcc
 - make install-gcc
 after_success:
