@@ -5,54 +5,19 @@ git:
 language: c
 compiler: gcc
 before_install:
+- echo "deb https://dl.bintray.com/rwth-os/hermitcore vivid main" | sudo tee -a /etc/apt/sources.list
 - sudo apt-get -qq update
-- sudo apt-get install -y gcc g++ nasm texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev packaging-dev
+- sudo apt-get install -y gcc g++ nasm flex dejagnu texinfo libmpfr-dev libmpc-dev libgmp-dev libisl-dev packaging-dev
+- sudo apt-get install -y binutils-hermit newlib-hermit pthread-embedded-hermit libhermit
+
 script:
 - rm -rf .git
-- cd ..
+- pushd ..
 - mv gcc gcc-5.3.1
 - tar czf gcc_5.3.1.orig.tar.gz gcc-5.3.1
-- cd $TOPDIR
-- wget https://bintray.com/rwth-os/hermitcore/download_file?file_path=binutils-hermit_2.26.1-1_amd64.deb -O binutils-hermit_2.26.1-1_amd64.deb
-- sudo dpkg -i ./binutils-hermit_2.26.1-1_amd64.deb
-- wget https://bintray.com/rwth-os/hermitcore/download_file?file_path=newlib-hermit_2.4.0-1_amd64.deb -O newlib-hermit_2.4.0-1_amd64.deb
-- sudo dpkg -i ./newlib-hermit_2.4.0-1_amd64.deb
-- wget https://bintray.com/rwth-os/hermitcore/download_file?file_path=pthread-embedded-hermit_1.0-1_amd64.deb -O pthread-embedded-hermit_1.0-1_amd64.deb
-- sudo dpkg -i ./pthread-embedded-hermit_1.0-1_amd64.deb
-- wget https://bintray.com/rwth-os/hermitcore/download_file?file_path=libhermit_0.1-1_amd64.deb -O libhermit_0.1-1_amd64.deb
-- sudo dpkg -i ./libhermit_0.1-1_amd64.deb
-- wget https://www.lankes.org/deploy/bootstrap.tar.gz
-- tar xzf bootstrap.tar.gz
-- mkdir -p $TOPDIR/tmp/bootstrap
-- export GO_FOR_TARGET="x86_64-hermit-gccgo"
-- export FC_FOR_TARGET=x86_64-hermit-fc
-- export CC_FOR_TARGET=x86_64-hermit-gcc
-- export CXX_FOR_TARGET=x86_64-hermit-g++
-- export GCC_FOR_TARGET=x86_64-hermit-gcc
-- export CPP_FOR_TARGET=x86_64-hermit-cpp
-- export AR_FOR_TARGET=x86_64-hermit-ar
-- export AS_FOR_TARGET=x86_64-hermit-as
-- export LD_FOR_TARGET=x86_64-hermit-ld
-- export OBJDUMP_FOR_TARGET=x86_64-hermit-objdump
-- export OBJCOPY_FOR_TARGET=x86_64-hermit-objcopy
-- export RANLIB_FOR_TARGET=x86_64-hermit-ranlib
-- export STRIP_FOR_TARGET=x86_64-hermit-strip
-- export READELF_FOR_TARGET=x86_64-hermit-readelf
-- export ELFEDIT_FOR_TARGET=x86_64-hermit-elfedit
-- export NM_FOR_TARGET=x86_64-hermit-nm
-- export CFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize"
-- export FCFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize"
-- export FFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize"
-- export GOFLAGS_FOR_NEWLIB="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize"
-- export CXXFLAGS_FOR_TARGET="-m64 -mtls-direct-seg-refs -O3 -ftree-vectorize"
-- cd $TOPDIR/tmp/bootstrap
-- $TOPDIR/RWTH-OS/gcc-5.3.1/configure --target=x86_64-hermit --prefix=/opt/hermit --with-newlib --with-isl --disable-multilib --with-tune=generic --enable-languages=c,c++,lto --disable-nls --disable-shared --disable-libssp --enable-threads=posix --disable-libgomp --enable-tls --enable-lto --disable-symvers
-- make -j2 all
-- sudo make install
-- cd $TOPDIR/RWTH-OS/gcc-5.3.1
-- rm -rf $TOPDIR/x86/bin
-- debuild -e PATH -e GO_FOR_TARGET -e FC_FOR_TARGET -e CC_FOR_TARGET -e CXX_FOR_TARGET -e GCC_FOR_TARGET -e CPP_FOR_TARGET -e AR_FOR_TARGET -e AS_FOR_TARGET -e LD_FOR_TARGET -e OBJDUMP_FOR_TARGET -e OBJCOPY_FOR_TARGET -e RANLIB_FOR_TARGET -e STRIP_FOR_TARGET -e READELF_FOR_TARGET -e ELFEDIT_FOR_TARGET -e NM_FOR_TARGET -e CFLAGS_FOR_TARGET -e FCFLAGS_FOR_TARGET -e FFLAGS_FOR_TARGET -e GOFLAGS_FOR_NEWLIB -e CXXFLAGS_FOR_TARGET -uc -us
-- cat /home/travis/build/RWTH-OS/builddeb/x86_64-hermit/libbacktrace/config.log
+- popd
+- time debuild -e PATH -us -uc -j2
+
 deploy:
   on: production
   provider: bintray
@@ -61,7 +26,8 @@ deploy:
    secure: KtZRrzFiR1AM2nvZzt+yyypIvmeAH7Tr2otwDyveHafzBV/rfJ1fsSuw+hP8eaG4rzxlh3I//z/62xKUHmIZWTO9FjOoMnmSUyoeKoGVjIfSYSMMpt5hRFTA0HI8+O/kk9jvhdntRisHMz2V5KC/iX9phscxTMoQUfanGM9Eoi7RHJG/8dZG7QfrTtTExekOjDeGrqrjuj9gf8tlOxzca99AC7kb4QycBm4fAXm8XKkgGnhDaJPRkcEeXs9JUvCgUb67pegTyBSdeP3asPATJXDJ+WwkT+kKMBh9l87E2+3vCKmfh6eK1e2f8Itx2IZeTWHcwbn7Pb3700V60fQyMy/2UyWTnBr46yfZg+s/pr2YURKg69E9n1lMy17L4JaK4viEqReu2ARMS3TBhNAVoaW2MNlna+gvVKHVR+/1iU/cxmvxkBd5uOZ2p/30OYSXxYO6hvTiU/CAtqvKTYk+CA1BL7ZiuGsoc80mFmfmj8Gh7dGShk8pAGYSKz55y/QpVf4bu8utAGDHEyWfopEvdJxOo5kv4MX9KCHd3VsGhzJzrRMCUmfAFWB5OWR2bHTAUJW0amFHSSqVYy/xaqhRBXdxIOeXQmysAn7uilVl8UILdmqdZrx4Du/nEWkVUaGQYJ+tLr0ysHmKFuI2mqomwKjcjjZHyl9md/E1PHhz4xk=
   key:
    secure: jz18aBR118iAlHRaOJn5iRvbf7pnyd2MOLdihHvTeE/eO/RIysmGWBSquW1jzjpABE/5epmawuImPg2pNgTyog9S2Idv4r0nQKTfGQ355PsMSxFrO1vSpy60g6r1oaEMOVWgln7cRhBwgCS3rSwrJnhzGJiKQwkDnep6PJys2thoHN9ZL6RMXNZHqgYFjQXgRGoK8NS3qfd1tW+H5T8fXq9r9rNeD78ncPbixxHo9k8xm+Y7krNHIJTZjyY0szg1ZGguW4FeI8oCb2mnn+CVWzJInf1Ojlu7SXBkEm6c9U86ZpCgQuSXlkkBuEC+TOsHXBmBtE94A/vVt8FI9Nm1ijlGo+sMhTEqtouLg/Y9GKlDjDCalaxQQzVD4vhGNnOaTwk9YZUxHwwSe3wpIFZdlK+ZfLcvMEcQeijlY0gvlOfXqlqSzVttJhMCdcvGmZGLGRvA5xfoAGgvj2F0k4UXzRB32+COJEO58DTms03mGCUhXZ9JMrAd48wBy5T5GWgnxWNRhkLQlSIOGaSdspKCMiVmyNBvmrxmweFUNrbrahP5Q2H7Zmmf1thjW9dE4cP9RWkruLMGu0dGbxEKGJOKTp3eG2SZ86Z1iY50mowfgBNQUg1wu/MBfL/ZVvsya3UNBddZAC37orOh9dcD5EYfeJL5hmspBnyVtJM7pVljKYg=
+
 env:
    global:
      - TOPDIR=/home/travis/build
-     - PATH=$PATH:/opt/hermit/bin:$TOPDIR/x86/bin
+     - PATH=$PATH:/opt/hermit/bin/
