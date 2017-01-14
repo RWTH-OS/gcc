@@ -4,6 +4,7 @@ git:
   submodules: false
 language: c
 compiler: gcc
+
 before_install:
 - echo "deb https://dl.bintray.com/rwth-os/hermitcore vivid main" | sudo tee -a /etc/apt/sources.list
 - sudo apt-get -qq update
@@ -11,11 +12,10 @@ before_install:
 - sudo apt-get install -y binutils-hermit newlib-hermit pthread-embedded-hermit libhermit
 
 script:
-- rm -rf .git
-- pushd ..
+- cd ..
 - mv gcc gcc-5.3.1
-- tar czf gcc_5.3.1.orig.tar.gz gcc-5.3.1
-- popd
+- tar czf gcc_5.3.1.orig.tar.gz gcc-5.3.1 --exclude=.git
+- cd gcc-5.3.1
 - time debuild -e PATH -us -uc -j2
 
 deploy:
@@ -29,5 +29,4 @@ deploy:
 
 env:
    global:
-     - TOPDIR=/home/travis/build
      - PATH=$PATH:/opt/hermit/bin/
