@@ -10,6 +10,6 @@ Homepage: http://www.hermitcore.org
 
 Package: gcc-hermit
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: newlib-hermit binutils-hermit pthread-embedded-hermit libhermit
 Description: HermitCore's Cross Compiler
  
