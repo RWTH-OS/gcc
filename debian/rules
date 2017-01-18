@@ -9,7 +9,7 @@ export DEB_BUILD_OPTS = nocheck
 
 # default rule to handover everything to debhelper
 %:
-	dh $@  --builddirectory=build --parallel
+	dh $@  --builddirectory=build #--parallel
 
 # we still need to configure GCC on our own
 override_dh_auto_configure:
