@@ -12,6 +12,10 @@ before_install:
 - sudo apt-get install --force-yes binutils-hermit newlib-hermit pthread-embedded-hermit libhermit
 
 script:
+- wget ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.15.tar.bz2 -O isl-0.15.tar.bz2
+- tar jxf isl-0.15.tar.bz2
+- mv isl-0.15 isl
+- rm isl-0.15.tar.bz2
 - cd ..
 - mv gcc gcc-5.3.1
 - tar czf gcc_5.3.1.orig.tar.gz gcc-5.3.1 --exclude=.git
