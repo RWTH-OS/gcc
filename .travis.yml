@@ -20,7 +20,7 @@ script:
 - mv gcc gcc-5.3.1
 - tar czf gcc_5.3.1.orig.tar.gz gcc-5.3.1 --exclude=.git
 - cd gcc-5.3.1
-- time debuild -e PATH -us -uc -j2
+- time debuild -e CFLAGS_FOR_TARGET -e GOFLAGS_FOR_TARGET -e FCFLAGS_FOR_TARGET -e FFLAGS_FOR_TARGET -e CXXFLAGS_FOR_TARGET -e PATH -us -uc -j2
 
 deploy:
   on: production
@@ -34,3 +34,8 @@ deploy:
 env:
    global:
      - PATH=$PATH:/opt/hermit/bin/
+     - CFLAGS_FOR_TARGET=-m64 -mtls-direct-seg-refs -O2 -ftree-vectorize
+     - GOFLAGS_FOR_TARGET=-m64 -mtls-direct-seg-refs -O2 -ftree-vectorize
+     - FCFLAGS_FOR_TARGET=-m64 -mtls-direct-seg-refs -O2 -ftree-vectorize
+     - FFLAGS_FOR_TARGET=-m64 -mtls-direct-seg-refs -O2 -ftree-vectorize
+     - CXXFLAGS_FOR_TARGET=-m64 -mtls-direct-seg-refs -O2 -ftree-vectorize
