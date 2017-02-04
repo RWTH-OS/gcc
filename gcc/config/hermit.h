@@ -18,6 +18,9 @@
 /* Switch into a generic section.  */
 #define TARGET_ASM_NAMED_SECTION  default_elf_asm_named_section
 
+#undef TARGET_TLS_DIRECT_SEG_REFS_DEFAULT
+#define TARGET_TLS_DIRECT_SEG_REFS_DEFAULT MASK_TLS_DIRECT_SEG_REFS
+
 /* Additional predefined macros. */
 #undef TARGET_OS_CPP_BUILTINS
 #define TARGET_OS_CPP_BUILTINS()      \
