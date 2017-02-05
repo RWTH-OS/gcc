@@ -22,21 +22,20 @@ func sockaddrToTCP(sa syscall.Sockaddr) Addr {
 	switch sa := sa.(type) {
 	case *syscall.SockaddrInet4:
 		return &TCPAddr{IP: sa.Addr[0:], Port: sa.Port}
-	/*case *syscall.SockaddrInet6:
-		return &TCPAddr{IP: sa.Addr[0:], Port: sa.Port, Zone: zoneToString(int(sa.ZoneId))}*/
+	case *syscall.SockaddrInet6:
+		return &TCPAddr{IP: sa.Addr[0:], Port: sa.Port, Zone: zoneToString(int(sa.ZoneId))}
 	}
 	return nil
 }
 
 func (a *TCPAddr) family() int {
-	/*if a == nil || len(a.IP) <= IPv4len {
+	if a == nil || len(a.IP) <= IPv4len {
 		return syscall.AF_INET
 	}
 	if a.IP.To4() != nil {
 		return syscall.AF_INET
 	}
-	return syscall.AF_INET6*/
-	return syscall.AF_INET
+	return syscall.AF_INET6
 }
 
 func (a *TCPAddr) isWildcard() bool {

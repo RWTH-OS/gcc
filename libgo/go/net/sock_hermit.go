@@ -97,7 +97,7 @@ func socket(net string, family, sotype, proto int, ipv6only bool, laddr, raddr s
 
 func (fd *netFD) addrFunc() func(syscall.Sockaddr) Addr {
 	switch fd.family {
-	case syscall.AF_INET/*, syscall.AF_INET6*/:
+	case syscall.AF_INET, syscall.AF_INET6:
 		switch fd.sotype {
 		case syscall.SOCK_STREAM:
 			return sockaddrToTCP
@@ -194,8 +194,8 @@ func (fd *netFD) listenDatagram(laddr sockaddr) error {
 			switch fd.family {
 			case syscall.AF_INET:
 				addr.IP = IPv4zero
-			/*case syscall.AF_INET6:
-				addr.IP = IPv6unspecified*/
+			case syscall.AF_INET6:
+				addr.IP = IPv6unspecified
 			}
 			laddr = &addr
 		}

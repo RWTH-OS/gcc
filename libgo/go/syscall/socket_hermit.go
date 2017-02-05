@@ -48,7 +48,7 @@ func (sa *SockaddrInet4) sockaddr() (*RawSockaddrAny, Socklen_t, error) {
 	return (*RawSockaddrAny)(unsafe.Pointer(&sa.raw)), n, nil
 }
 
-/*type SockaddrInet6 struct {
+type SockaddrInet6 struct {
 	Port   int
 	ZoneId uint32
 	Addr   [16]byte
@@ -71,7 +71,7 @@ func (sa *SockaddrInet6) sockaddr() (*RawSockaddrAny, Socklen_t, error) {
 	return (*RawSockaddrAny)(unsafe.Pointer(&sa.raw)), n, nil
 }
 
-type SockaddrUnix struct {
+/*type SockaddrUnix struct {
 	Name string
 	raw  RawSockaddrUnix
 }
@@ -121,7 +121,7 @@ func anyToSockaddr(rsa *RawSockaddrAny) (Sockaddr, error) {
 		}
 		return sa, nil
 
-	/*case AF_INET6:
+	case AF_INET6:
 		pp := (*RawSockaddrInet6)(unsafe.Pointer(rsa))
 		sa := new(SockaddrInet6)
 		p := (*[2]byte)(unsafe.Pointer(&pp.Port))
@@ -129,7 +129,7 @@ func anyToSockaddr(rsa *RawSockaddrAny) (Sockaddr, error) {
 		for i := 0; i < len(sa.Addr); i++ {
 			sa.Addr[i] = pp.Addr[i]
 		}
-		return sa, nil*/
+		return sa, nil
 	}
 	return anyToSockaddrOS(rsa)
 }
@@ -202,7 +202,7 @@ func Connect(fd int, sa Sockaddr) (err error) {
 //socket(domain _C_int, typ _C_int, protocol _C_int) _C_int
 
 func Socket(domain, typ, proto int) (fd int, err error) {
-	if /*domain == AF_INET6 &&*/ SocketDisableIPv6 {
+	if domain == AF_INET6 && SocketDisableIPv6 {
 		return -1, EAFNOSUPPORT
 	}
 	fd, err = socket(domain, typ, proto)

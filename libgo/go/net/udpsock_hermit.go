@@ -15,8 +15,8 @@ func sockaddrToUDP(sa syscall.Sockaddr) Addr {
 	switch sa := sa.(type) {
 	case *syscall.SockaddrInet4:
 		return &UDPAddr{IP: sa.Addr[0:], Port: sa.Port}
-	/*case *syscall.SockaddrInet6:
-		return &UDPAddr{IP: sa.Addr[0:], Port: sa.Port, Zone: zoneToString(int(sa.ZoneId))}*/
+	case *syscall.SockaddrInet6:
+		return &UDPAddr{IP: sa.Addr[0:], Port: sa.Port, Zone: zoneToString(int(sa.ZoneId))}
 	}
 	return nil
 }
@@ -25,10 +25,10 @@ func (a *UDPAddr) family() int {
 	if a == nil || len(a.IP) <= IPv4len {
 		return syscall.AF_INET
 	}
-	//if a.IP.To4() != nil {
+	if a.IP.To4() != nil {
 		return syscall.AF_INET
-	//}
-	//return syscall.AF_INET6
+	}
+	return syscall.AF_INET6
 }
 
 func (a *UDPAddr) isWildcard() bool {
@@ -68,8 +68,8 @@ func (c *UDPConn) ReadFromUDP(b []byte) (n int, addr *UDPAddr, err error) {
 	switch sa := sa.(type) {
 	case *syscall.SockaddrInet4:
 		addr = &UDPAddr{IP: sa.Addr[0:], Port: sa.Port}
-	/*case *syscall.SockaddrInet6:
-		addr = &UDPAddr{IP: sa.Addr[0:], Port: sa.Port, Zone: zoneToString(int(sa.ZoneId))}*/
+	case *syscall.SockaddrInet6:
+		addr = &UDPAddr{IP: sa.Addr[0:], Port: sa.Port, Zone: zoneToString(int(sa.ZoneId))}
 	}
 	return
 }
@@ -230,12 +230,12 @@ func ListenMulticastUDP(net string, ifi *Interface, gaddr *UDPAddr) (*UDPConn, e
 			c.Close()
 			return nil, &OpError{Op: "listen", Net: net, Addr: &IPAddr{IP: ip4}, Err: err}
 		}
-	} /*else {
+	} else {
 		if err := listenIPv6MulticastUDP(c, ifi, gaddr.IP); err != nil {
 			c.Close()
 			return nil, &OpError{Op: "listen", Net: net, Addr: &IPAddr{IP: gaddr.IP}, Err: err}
 		}
-	}*/
+	}
 	return c, nil
 }
 
@@ -255,7 +255,7 @@ func listenIPv4MulticastUDP(c *UDPConn, ifi *Interface, ip IP) error {
 }
 
 func listenIPv6MulticastUDP(c *UDPConn, ifi *Interface, ip IP) error {
-	/*if ifi != nil {
+	if ifi != nil {
 		if err := setIPv6MulticastInterface(c.fd, ifi); err != nil {
 			return err
 		}
@@ -265,6 +265,6 @@ func listenIPv6MulticastUDP(c *UDPConn, ifi *Interface, ip IP) error {
 	}
 	if err := joinIPv6Group(c.fd, ifi, ip); err != nil {
 		return err
-	}*/
+	}
 	return nil
 }

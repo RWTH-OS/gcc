@@ -27,8 +27,8 @@ func sockaddrToIP(sa syscall.Sockaddr) Addr {
 	switch sa := sa.(type) {
 	case *syscall.SockaddrInet4:
 		return &IPAddr{IP: sa.Addr[0:]}
-	/*case *syscall.SockaddrInet6:
-		return &IPAddr{IP: sa.Addr[0:], Zone: zoneToString(int(sa.ZoneId))}*/
+	case *syscall.SockaddrInet6:
+		return &IPAddr{IP: sa.Addr[0:], Zone: zoneToString(int(sa.ZoneId))}
 	}
 	return nil
 }
@@ -37,10 +37,10 @@ func (a *IPAddr) family() int {
 	if a == nil || len(a.IP) <= IPv4len {
 		return syscall.AF_INET
 	}
-	//if a.IP.To4() != nil {
+	if a.IP.To4() != nil {
 		return syscall.AF_INET
-	//}
-	//return syscall.AF_INET6
+	}
+	return syscall.AF_INET6
 }
 
 func (a *IPAddr) isWildcard() bool {
@@ -88,8 +88,8 @@ func (c *IPConn) ReadFromIP(b []byte) (int, *IPAddr, error) {
 			copy(b, b[hsize:])
 			n -= hsize
 		}
-	/*case *syscall.SockaddrInet6:
-		addr = &IPAddr{IP: sa.Addr[0:], Zone: zoneToString(int(sa.ZoneId))}*/
+	case *syscall.SockaddrInet6:
+		addr = &IPAddr{IP: sa.Addr[0:], Zone: zoneToString(int(sa.ZoneId))}
 	}
 	return n, addr, err
 }

@@ -38,7 +38,7 @@ func probeIPv4Stack() bool {
 // true, kernel supports basic IPv6 functionality.  If the second
 // boolean value is true, kernel supports IPv6 IPv4-mapping.
 func probeIPv6Stack() (supportsIPv6, supportsIPv4map bool) {
-	/*var probes = []struct {
+	var probes = []struct {
 		laddr TCPAddr
 		value int
 		ok    bool
@@ -66,8 +66,7 @@ func probeIPv6Stack() (supportsIPv6, supportsIPv4map bool) {
 		probes[i].ok = true
 	}
 
-	return probes[0].ok, probes[1].ok*/
-	return false, false
+	return probes[0].ok, probes[1].ok
 }
 
 // favoriteAddrFamily returns the appropriate address family to
@@ -107,7 +106,7 @@ func probeIPv6Stack() (supportsIPv6, supportsIPv4map bool) {
 // Note that OpenBSD allows neither "net.inet6.ip6.v6only=1" change
 // nor IPPROTO_IPV6 level IPV6_V6ONLY socket option setting.
 func favoriteAddrFamily(net string, laddr, raddr sockaddr, mode string) (family int, ipv6only bool) {
-	/*switch net[len(net)-1] {
+	switch net[len(net)-1] {
 	case '4':
 		return syscall.AF_INET, false
 	case '6':
@@ -128,8 +127,7 @@ func favoriteAddrFamily(net string, laddr, raddr sockaddr, mode string) (family 
 		(raddr == nil || raddr.family() == syscall.AF_INET) {
 		return syscall.AF_INET, false
 	}
-	return syscall.AF_INET6, false*/
-	return syscall.AF_INET, false
+	return syscall.AF_INET6, false
 }
 
 // Internet sockets (TCP, UDP, IP)
@@ -154,7 +152,7 @@ func ipToSockaddr(family int, ip IP, port int, zone string) (syscall.Sockaddr, e
 		}
 		sa.Port = port
 		return sa, nil
-	/*case syscall.AF_INET6:
+	case syscall.AF_INET6:
 		if len(ip) == 0 {
 			ip = IPv6zero
 		}
@@ -173,7 +171,7 @@ func ipToSockaddr(family int, ip IP, port int, zone string) (syscall.Sockaddr, e
 		}
 		sa.Port = port
 		sa.ZoneId = uint32(zoneToInt(zone))
-		return sa, nil*/
+		return sa, nil
 	}
 	return nil, InvalidAddrError("unexpected socket family")
 }
