@@ -36,7 +36,7 @@ apt-get install -y wget curl gnupg checkinstall gawk dialog apt-utils flex bison
 
 curl -L https://packagecloud.io/hermitcore/main/gpgkey | sudo apt-key add -
 sudo apt-get update
-sudo apt-get binutils-hermit
+sudo apt-get install binutils-hermit
 export PATH=/opt/hermit/bin:$PATH
 
 wget ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.15.tar.bz2 -O isl-0.15.tar.bz2
